@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './core/AppTempData.dart';
+import '../core/appTempData.dart';
 
 class InChannel extends StatelessWidget {
   final int index;

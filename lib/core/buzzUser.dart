@@ -1,4 +1,4 @@
-import 'MyChannel.dart';
+import 'myChannel.dart';
 class BuzzUser{
   String displayName;
   String nickname;

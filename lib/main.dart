@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'channelList.dart';
-import 'fabs.dart';
-import './core/AppTempData.dart';
+import 'ui/channelList.dart';
+import 'ui/fabs.dart';
+import 'ui/makenjoin.dart';
+import 'core/appTempData.dart';
+
 
 void main() => runApp(App());
 
@@ -27,14 +29,18 @@ class AppHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Buzz')),
-      body: ChannelList(
-        channels: AppTempData.channels,
+      body: Stack(
+        children: <Widget>[
+          
+          ChannelList(
+            channels: AppTempData.channels,
+          ),
+          MakeNJoin()
+        ],
       ),
       floatingActionButton: Fab(
         icon: Icon(Icons.add),
-        func: () {
-
-        },
+        func: () {},
         tooltip: 'Toogle add channel',
       ),
       backgroundColor: Color.fromRGBO(240, 240, 240, 1),

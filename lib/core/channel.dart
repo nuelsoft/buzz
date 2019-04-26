@@ -1,6 +1,6 @@
-import 'BuzzUser.dart';
-import 'Poll.dart';
-import 'Course.dart';
+import 'buzzUser.dart';
+import 'poll.dart';
+import 'course.dart';
 
 class Channel {
   String channelTitle;

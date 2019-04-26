@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import './core/channel.dart';
+import '../core/channel.dart';
 import 'notifyCard.dart';
-import './core/appTempData.dart';
+import '../core/appTempData.dart';
 import 'inChannel.dart';
 
 class ChannelList extends StatefulWidget {
