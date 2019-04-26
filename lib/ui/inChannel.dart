@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'AppTempData.dart';
+import './core/AppTempData.dart';
 
 class InChannel extends StatelessWidget {
   final int index;
@@ -12,7 +12,7 @@ class InChannel extends StatelessWidget {
       appBar: AppBar(title: Text(AppTempData.channels[index].channelTitle)),
       body: Center(child: Text('Under Construction')),
       bottomNavigationBar: BottomNavBar(),
-      backgroundColor:  Color.fromRGBO(240, 240, 240, 1),
+      backgroundColor: Color.fromRGBO(240, 240, 240, 1),
     );
   }
 }
@@ -48,16 +48,16 @@ class BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-        items: bottomNavBarItems,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).accentColor,
-        onTap: _onItemSelected,
-        );
+      items: bottomNavBarItems,
+      currentIndex: _selectedIndex,
+      selectedItemColor: Theme.of(context).accentColor,
+      onTap: _onItemSelected,
+    );
   }
 
-  void _onItemSelected(int index){
+  void _onItemSelected(int index) {
     setState(() {
-          _selectedIndex = index;
-        });
+      _selectedIndex = index;
+    });
   }
 }

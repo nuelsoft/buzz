@@ -1,5 +1,5 @@
-import 'Channel.dart';
-import 'Course.dart';
+import 'channel.dart';
+import 'course.dart';
 
 class AppTempData {
   ///Example of Channel

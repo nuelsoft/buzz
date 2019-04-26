@@ -1,6 +1,6 @@
-import 'Channel.dart';
-import 'BuzzUser.dart';
-import 'Poll.dart';
+import 'channel.dart';
+import 'buzzUser.dart';
+import 'poll.dart';
 
 class AppManager {
   ///

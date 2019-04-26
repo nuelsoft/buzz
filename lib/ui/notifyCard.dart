@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'EmptySpace.dart';
+import 'emptySpace.dart';
 
 class NotifyCard extends StatefulWidget {
   @required

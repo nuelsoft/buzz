@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'AppTempData.dart';
+import './core/AppTempData.dart';
 
 class CourseList extends StatelessWidget {
   final int channelIndex;

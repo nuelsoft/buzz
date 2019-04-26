@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'ChannelList.dart';
-import 'Fabs.dart';
-import 'AppTempData.dart';
+import 'channelList.dart';
+import 'fabs.dart';
+import './core/AppTempData.dart';
 
 void main() => runApp(App());
 
@@ -10,7 +10,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Buzz',
-      theme: ThemeData(primarySwatch: Colors.amber, accentColor: Colors.brown,),
+      theme: ThemeData(
+        primarySwatch: Colors.amber,
+        accentColor: Colors.brown,
+      ),
       // routes: <String, WidgetBuilder>{
       //   '/enterChannel': (context) => InChannel(),
       // },
@@ -24,11 +27,13 @@ class AppHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Buzz')),
-      body: ChannelList(channels: AppTempData.channels,),
+      body: ChannelList(
+        channels: AppTempData.channels,
+      ),
       floatingActionButton: Fab(
         icon: Icon(Icons.add),
         func: () {
-          
+
         },
         tooltip: 'Toogle add channel',
       ),
