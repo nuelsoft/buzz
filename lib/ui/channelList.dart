@@ -91,8 +91,11 @@ class ChannelEntryState extends State<ChannelEntry> {
     return Container(
         margin: EdgeInsets.only(top: 1, left: 2, right: 2),
         child: Card(
-          elevation: 1,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+          elevation: 0,
           child: RaisedButton(
+            elevation: 3,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => InChannel(index: index,)));

@@ -1,5 +1,6 @@
 import 'channel.dart';
 import 'course.dart';
+import 'lecture.dart';
 
 class AppTempData {
   ///Example of Channel
@@ -31,6 +32,13 @@ class AppTempData {
         courseTitle: 'SomeTiltl',
         lecturerName: 'Mr DLKJ',
         lecturerOffice: 'Some Office',
-        lectureUnitLoad: 6));
+        unitLoad: 6));
+
+    channels[0].allLectureDays.mondayLectures.add(Lecture(
+        course: channels[0].courses[0],
+        dayOfWeek: 0,
+        location: 'FPSLT',
+        startTime: '19:00',
+        endTime: '21:00'));
   }
 }

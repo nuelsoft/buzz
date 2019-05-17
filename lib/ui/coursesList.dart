@@ -4,13 +4,13 @@ import '../core/appTempData.dart';
 class CourseList extends StatelessWidget {
   final int channelIndex;
   CourseList({this.channelIndex});
-  
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () {},
       child: ListView.builder(
-        itemCount: AppTempData.channels[channelIndex].courses.length,
+        itemCount: 5,
         itemBuilder: (context, index) {
           return _courseEntry(index: index, channelIndex: channelIndex);
         },
@@ -19,8 +19,14 @@ class CourseList extends StatelessWidget {
   }
 
   Widget _courseEntry({int index, int channelIndex}) {
-    return Card(
-        child: Text(
-            AppTempData.channels[channelIndex].courses[index].courseTitle));
+    return Container(
+        child: Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(4),
+          child: Text('Introducion to Computer Science'),
+        )
+      ],
+    ));
   }
 }

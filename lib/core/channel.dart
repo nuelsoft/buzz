@@ -1,6 +1,7 @@
 import 'buzzUser.dart';
 import 'poll.dart';
 import 'course.dart';
+import 'allLectures.dart';
 
 class Channel {
   String channelTitle;
@@ -19,11 +20,11 @@ class Channel {
   List<BuzzUser> users;
   List<BuzzUser> admins;
   List<Poll> polls;
-
   List<Course> courses;
 
+AllLectures allLectureDays;
 
-  void addNewCourse({Course course}){
+  void addNewCourse({Course course}) {
     courses.add(course);
   }
 

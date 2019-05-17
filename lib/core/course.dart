@@ -3,14 +3,13 @@ class Course {
   String courseCode;
   String lecturerName;
   String lecturerOffice;
-  int lectureUnitLoad;
+  int unitLoad;
   String channelId;
-
-  Course(
+   Course(
       {this.courseTitle,
       this.courseCode,
       this.lecturerName,
       this.lecturerOffice,
-      this.lectureUnitLoad,
+      this.unitLoad,
       this.channelId});
 }

@@ -1,5 +1,7 @@
 import 'channel.dart';
 import 'buzzUser.dart';
+import 'course.dart';
+import 'lecture.dart';
 import 'poll.dart';
 
 class AppManager {
@@ -42,8 +44,9 @@ class AppManager {
   ///to the target channelId.
   ///If match occurs, then the user is added to the Channel's list of Users.
   ///It does this using the already existing void addNewBuzzUser(...) defined in
-  ///class Channel{...}
+  ///class Channel{...}int unitLoad;
   ///
+
   void addBuzzUser(String displayName, String nickname, DateTime dateOfBirth,
       String gender, String channelId) {
     for (var chnl in channels) {
@@ -92,13 +95,13 @@ class AppManager {
   ) {
     for (var chnl in channels) {
       if (chnl.channelId == pollId) {
-        chnl.addNewPollOption(pollOpt: PollOption(
-            pollId: pollId,
-            channelId: channelId,
-            optionTitle: optionTitle,
-            optionManifesto: optionManifesto));
+        chnl.addNewPollOption(
+            pollOpt: PollOption(
+                pollId: pollId,
+                channelId: channelId,
+                optionTitle: optionTitle,
+                optionManifesto: optionManifesto));
       }
     }
   }
-
 }

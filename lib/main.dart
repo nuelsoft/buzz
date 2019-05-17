@@ -4,7 +4,6 @@ import 'ui/fabs.dart';
 import 'ui/makenjoin.dart';
 import 'core/appTempData.dart';
 
-
 void main() => runApp(App());
 
 class App extends StatelessWidget {
@@ -29,18 +28,16 @@ class AppHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Buzz')),
-      body: Stack(
-        children: <Widget>[
-          
-          ChannelList(
-            channels: AppTempData.channels,
-          ),
-          MakeNJoin()
-        ],
+      body: Container(
+        child: ChannelList(
+          channels: AppTempData.channels,
+        ),
       ),
       floatingActionButton: Fab(
         icon: Icon(Icons.add),
-        func: () {},
+        func: () {
+          showDialog(context: context, builder: (_) => MakeNJoin());
+        },
         tooltip: 'Toogle add channel',
       ),
       backgroundColor: Color.fromRGBO(240, 240, 240, 1),

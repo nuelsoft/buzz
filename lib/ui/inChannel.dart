@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/appTempData.dart';
+import 'pageView.dart';
 
 class InChannel extends StatelessWidget {
   final int index;
@@ -10,9 +11,9 @@ class InChannel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(AppTempData.channels[index].channelTitle)),
-      body: Center(child: Text('Under Construction')),
+      body: MainPageView(channelIndex: index),
       bottomNavigationBar: BottomNavBar(),
-      backgroundColor: Color.fromRGBO(240, 240, 240, 1),
+      backgroundColor: Color.fromRGBO(225, 225, 225, 1),
     );
   }
 }
@@ -61,3 +62,4 @@ class BottomNavBarState extends State<BottomNavBar> {
     });
   }
 }
+ 
