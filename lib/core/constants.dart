@@ -6,3 +6,9 @@ class Days {
   static final int friday = 4;
   static final int saturday = 5;
 }
+
+class BuzzCategories{
+  static final int info = 0;
+  static final int event = 1;
+  static final int poll = 2;
+}

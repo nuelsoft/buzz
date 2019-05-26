@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/appManager.dart';
 import '../core/lecture.dart';
+import 'lectureListUI/lectureList.dart';
 
 class LectureDay extends StatefulWidget {
   final int day;
@@ -19,10 +20,9 @@ class LectureDayState extends State<LectureDay> {
   int channelIndex;
   LectureDayState({this.day, this.channelIndex});
 
-  List<Step> steps = [];
+  List<Lecture> todaysList;
   void prepareTodayList() {
-    List<Lecture> todaysList;
-    if (AppManager.channels != null) {
+    if (AppManager.channels != null && AppManager.channels.length > 0) {
       switch (day) {
         case 0:
           todaysList =
@@ -49,27 +49,13 @@ class LectureDayState extends State<LectureDay> {
               AppManager.channels[channelIndex].allLectureDays.saturdayLectues;
           break;
       }
-      for (var cls in todaysList) {
-        steps.add(Step(
-            title: Text(cls.course.courseTitle),
-            content: StepperContent(
-              code: cls.course.courseCode,
-              location: cls.location,
-              unitLoad: cls.course.unitLoad,
-            )));
-      }
     }
   }
 
   Widget parseLectures() {
     prepareTodayList();
-    if (steps.length > 0) {
-      return Container(
-        child: Stepper(
-          steps: steps,
-          physics: BouncingScrollPhysics(),
-        ),
-      );
+    if (todaysList != null && todaysList.length > 0) {
+      return LectureList(lectures: todaysList);
     } else {
       return Container(child: Center(child: Text('No Lectures Today!')));
     }
@@ -78,34 +64,5 @@ class LectureDayState extends State<LectureDay> {
   @override
   Widget build(BuildContext context) {
     return parseLectures();
-  }
-}
-
-class StepperContent extends StatelessWidget {
-  final String code;
-  final String location;
-  final int unitLoad;
-  // final String endTime;
-  // final String startTime;
-
-  StepperContent({this.code, this.location, this.unitLoad});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20))),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.all(4),
-        child: Column(children: [
-          Text(code,
-              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w500)),
-          Row(
-            children: <Widget>[Icon(Icons.location_on), Text(location)],
-          )
-        ]),
-      ),
-    );
   }
 }

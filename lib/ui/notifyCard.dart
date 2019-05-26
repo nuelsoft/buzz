@@ -28,17 +28,17 @@ class NotifyCardState extends State<NotifyCard> {
 
       return Card(
           elevation: 3,
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).accentColor,
           child: Padding(
               padding: EdgeInsets.only(top: 6, bottom: 6, left: 12, right: 12),
               child: Row(
                 children: <Widget>[
                   Icon(
                     Icons.notifications_active,
-                    color: Theme.of(context).accentColor,
+                    color: Color.fromRGBO(249, 249, 255, 1),
                     size: 17,
                   ),
-                  Text(unSeenMsg),
+                  Text(unSeenMsg,style: TextStyle(color: Color.fromRGBO(249, 249, 255, 1)),),
                 ],
               )));
     }

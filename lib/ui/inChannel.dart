@@ -10,10 +10,14 @@ class InChannel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppTempData.channels[index].channelTitle)),
+      appBar: AppBar(
+        title: Text(AppTempData.channels[index].channelTitle),
+        backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+        elevation: 0,
+      ),
       body: MainPageView(channelIndex: index),
       bottomNavigationBar: BottomNavBar(),
-      backgroundColor: Color.fromRGBO(225, 225, 225, 1),
+      // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
     );
   }
 }
@@ -49,6 +53,8 @@ class BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      elevation: 0,
+      backgroundColor: Color.fromRGBO(249, 249, 255, 1),
       items: bottomNavBarItems,
       currentIndex: _selectedIndex,
       selectedItemColor: Theme.of(context).accentColor,
@@ -62,4 +68,3 @@ class BottomNavBarState extends State<BottomNavBar> {
     });
   }
 }
- 

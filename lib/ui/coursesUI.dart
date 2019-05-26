@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'courseListUI/courseList.dart';
 
 class Courses extends StatelessWidget {
+  final int channelIndex;
+  Courses({this.channelIndex});
+
   @override
   Widget build(BuildContext context) {
-    return PageView(physics: BouncingScrollPhysics(), children: <Widget>[
-              Container(color: Colors.indigo),
-              Container(color: Colors.red),
-              Container(color: Colors.blue),
-              Container(color: Colors.white),
-              Container(color: Colors.yellow),
-              Container(color: Colors.black),
-            ]);
+    return Card(
+        color: Colors.white,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16))),
+        child: CourseList(
+          channelIndex: channelIndex,
+        ));
   }
 }

@@ -4,6 +4,7 @@ class Lecture {
   Course course;
   String startTime, endTime, location;
   int dayOfWeek;
+  bool isFixed;
 
   Lecture({
     this.course,
@@ -11,5 +12,6 @@ class Lecture {
     this.endTime,
     this.location,
     this.dayOfWeek,
+    this.isFixed,
   });
 }

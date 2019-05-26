@@ -32,43 +32,57 @@ class MakeNJoinState extends State<MakeNJoin>
   Widget build(BuildContext context) {
     return Center(
       child: ScaleTransition(
-        scale: scaleAnimation,
-        child: Padding(
-          padding: EdgeInsets.all(5),
-          child: 
-          Flex(
-          mainAxisSize: MainAxisSize.min,
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-                padding: EdgeInsets.all(32),
-                onPressed: () {},
-                shape: CircleBorder(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[Icon(Icons.create), Text('Make Channel')],
-                )),
-            RaisedButton(
-              padding: EdgeInsets.all(32),
-              onPressed: () {},
-              shape: CircleBorder(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.group),
-                  Text(
-                    'Join Channel',
-                  )
-                ],
-              ),
+          scale: scaleAnimation,
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: Flex(
+              mainAxisSize: MainAxisSize.min,
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                    color: Color.fromRGBO(249, 249, 255, 1),
+                    padding: EdgeInsets.all(33),
+                    onPressed: () {},
+                    shape: CircleBorder(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.create,
+                          color: Color.fromRGBO(0, 0, 255, 1),
+                        ),
+                        Text(
+                          'Make Channel',
+                          style: TextStyle(color: Color.fromRGBO(0, 0, 255, 1)),
+                        )
+                      ],
+                    )),
+                RaisedButton(
+                  color: Color.fromRGBO(249, 249, 255, 1),
+                  padding: EdgeInsets.all(33),
+                  onPressed: () {},
+                  shape: CircleBorder(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        Icons.group,
+                        color: Color.fromRGBO(0, 0, 255, 1),
+                      ),
+                      Text(
+                        'Join Channel',
+                        style: TextStyle(color: Color.fromRGBO(0, 0, 255, 1)),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),)
-      ),
+          )),
     );
   }
 }

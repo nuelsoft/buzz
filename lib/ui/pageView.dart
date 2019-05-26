@@ -4,10 +4,9 @@ import 'coursesUI.dart';
 import 'buzzesUI.dart';
 
 class MainPageView extends StatelessWidget {
+  final int channelIndex;
 
-  int channelIndex;
-
-  MainPageView({@required channelIndex});
+  MainPageView({this.channelIndex});
 
   final int currentPage = 0;
 
@@ -15,7 +14,15 @@ class MainPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageView(
       physics: NeverScrollableScrollPhysics(),
-      children: <Widget>[Lectures(channelIndex: channelIndex), Courses(), Buzzes()],
+      children: <Widget>[
+        // Lectures(
+        //   channelIndex: channelIndex
+        //   ),
+        // Courses(
+        //   channelIndex: channelIndex,
+        // ),
+        Buzzes(channelIndex: channelIndex)
+      ],
     );
   }
 }

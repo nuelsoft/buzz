@@ -10,7 +10,7 @@ class AppTempData {
         channelId: "CS_021",
         channelBase: "University of Ibadan",
         myCurrentBuzzes: 1,
-        channelMembers: 123),
+        channelMembers: 123,),
     Channel(
         channelTitle: "Economics CLASS",
         channelId: "EC_021",

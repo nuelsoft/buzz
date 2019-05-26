@@ -13,9 +13,7 @@ class ChannelList extends StatefulWidget {
   State<StatefulWidget> createState() {
     return ChannelListState(channels: channels);
   }
-
 }
-
 
 class ChannelListState extends State<ChannelList> {
   List<Channel> channels;
@@ -47,8 +45,6 @@ class ChannelListState extends State<ChannelList> {
               }),
         ));
   }
-
-  
 }
 
 class ChannelEntry extends StatefulWidget {
@@ -91,14 +87,21 @@ class ChannelEntryState extends State<ChannelEntry> {
     return Container(
         margin: EdgeInsets.only(top: 1, left: 2, right: 2),
         child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+          color: Color.fromRGBO(238, 238, 255, 1),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(12))),
           elevation: 0,
           child: RaisedButton(
-            elevation: 3,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => InChannel(index: index,)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => InChannel(
+                            index: index,
+                          )));
             },
             color: Colors.white,
             padding: EdgeInsets.all(4),
