@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/appTempData.dart';
+import '../core/genFiles.dart';
 import 'pageView.dart';
 
 class InChannel extends StatelessWidget {
@@ -7,6 +8,7 @@ class InChannel extends StatelessWidget {
 
   InChannel({@required this.index});
 
+  final PageController pgc = PageController(initialPage: 0, keepPage: true);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,14 +17,15 @@ class InChannel extends StatelessWidget {
         backgroundColor: Color.fromRGBO(249, 249, 255, 1),
         elevation: 0,
       ),
-      body: MainPageView(channelIndex: index),
-      bottomNavigationBar: BottomNavBar(),
+      body: MainPageView(channelIndex: index, pgc: pgc),
+      bottomNavigationBar: BottomNavBar(pageController: pgc),
       // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
     );
   }
 }
 
 class BottomNavBar extends StatefulWidget {
+  final pageController;
   final List<BottomNavigationBarItem> bottomNavItems = [
     BottomNavigationBarItem(
       title: Text('Lectures'),
@@ -38,17 +41,20 @@ class BottomNavBar extends StatefulWidget {
     )
   ];
 
+  BottomNavBar({this.pageController});
+
   @override
   State<StatefulWidget> createState() {
-    return BottomNavBarState(bottomNavBarItems: bottomNavItems);
+    return BottomNavBarState(
+        bottomNavBarItems: bottomNavItems, pageController: pageController);
   }
 }
 
 class BottomNavBarState extends State<BottomNavBar> {
   List<BottomNavigationBarItem> bottomNavBarItems;
-  int _selectedIndex = 0;
+  final PageController pageController;
 
-  BottomNavBarState({@required this.bottomNavBarItems});
+  BottomNavBarState({@required this.bottomNavBarItems, this.pageController});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,7 @@ class BottomNavBarState extends State<BottomNavBar> {
       elevation: 0,
       backgroundColor: Color.fromRGBO(249, 249, 255, 1),
       items: bottomNavBarItems,
-      currentIndex: _selectedIndex,
+      currentIndex: GenFiles.selectedIndex,
       selectedItemColor: Theme.of(context).accentColor,
       onTap: _onItemSelected,
     );
@@ -64,7 +70,10 @@ class BottomNavBarState extends State<BottomNavBar> {
 
   void _onItemSelected(int index) {
     setState(() {
-      _selectedIndex = index;
+      debugPrint('tapped');
+      GenFiles.selectedIndex = index;
+      pageController.animateToPage(index,
+          curve: Curves.easeOutSine, duration: Duration(milliseconds: 300));
     });
   }
 }

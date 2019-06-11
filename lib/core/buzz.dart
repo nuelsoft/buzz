@@ -14,16 +14,16 @@ class Buzz {
   String postTime;
   String tag;
   String venue;
+  String msg;
 
   String proposedTime;
-  String meetingPlace;
 
   Buzz(
       {this.author,
       this.category,
-      this.meetingPlace,
       this.postTime,
       this.proposedTime,
+      this.msg,
       this.tag,
       this.title,
       this.venue});

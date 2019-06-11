@@ -22,7 +22,51 @@ class CourseListState extends State<CourseList> {
 
   void prepareCourses() {
     if (AppManager.channels != null && AppManager.channels.length > 0) {
-      courses = AppManager.channels[channelIndex].courses;
+      // courses = AppManager.channels[channelIndex].courses;
+      //demo
+      courses = [
+        Course(
+            channelId: 'THA',
+            courseCode: 'COS201',
+            courseTitle: 'Programming',
+            unitLoad: 4,
+            lecturerName: 'Odogwu',
+            recommendedText: null,
+            lecturerOffice: 'FPSLT'),
+        Course(
+            channelId: 'THA',
+            courseCode: 'COS201',
+            courseTitle: 'Programming',
+            unitLoad: 4,
+            lecturerName: 'Odogwu',
+            recommendedText: null,
+            lecturerOffice: 'FPSLT'),
+        Course(
+            channelId: 'THA',
+            courseCode: 'COS201',
+            courseTitle: 'Programming',
+            unitLoad: 4,
+            lecturerName: 'Odogwu',
+            recommendedText: null,
+            lecturerOffice: 'FPSLT'),
+        Course(
+            channelId: 'THA',
+            courseCode: 'COS201',
+            courseTitle: 'Programming',
+            unitLoad: 4,
+            lecturerName: 'Odogwu',
+            recommendedText: null,
+            lecturerOffice: 'FPSLT'),
+        Course(
+            channelId: 'THA',
+            courseCode: 'COS201',
+            courseTitle: 'Programming',
+            unitLoad: 4,
+            lecturerName: 'Odogwu',
+            recommendedText: null,
+            lecturerOffice: 'FPSLT'),
+   
+      ];
     }
   }
 
@@ -30,6 +74,7 @@ class CourseListState extends State<CourseList> {
   Widget build(BuildContext context) {
     if (courses != null && courses.length > 0) {
       return ListView.builder(
+        physics: BouncingScrollPhysics(),
         itemCount: courses.length,
         itemBuilder: (context, index) {
           CourseItem(course: courses[index]);
