@@ -3,6 +3,8 @@ import 'buzzUser.dart';
 import 'course.dart';
 import 'lecture.dart';
 import 'poll.dart';
+import 'constants.dart';
+import 'buzz.dart';
 
 class AppManager {
   ///
@@ -60,6 +62,22 @@ class AppManager {
                 channelId: channelId));
       }
     }
+  }
+
+  List<Buzz> getBuzzList({int channelIndex, int buzzCategory, bool all}) {
+    List<Buzz> localList = [];
+        if (!all) {
+          for (var buzz in channels[channelIndex].buzzes) {
+            if (buzz.category == buzzCategory) {
+              localList.add(buzz);
+            }
+          }
+        } else {
+          localList = channels[channelIndex].buzzes;
+        
+    }
+
+    return localList;
   }
 
   ///

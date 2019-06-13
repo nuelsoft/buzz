@@ -14,12 +14,15 @@ class InChannel extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppTempData.channels[index].channelTitle),
-        backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+        // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+              backgroundColor: Color.fromRGBO(240, 240, 255, 1),
+
         elevation: 0,
       ),
       body: MainPageView(channelIndex: index, pgc: pgc),
       bottomNavigationBar: BottomNavBar(pageController: pgc),
       // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+      backgroundColor: Color.fromRGBO(240, 240, 255, 1),
     );
   }
 }
@@ -60,7 +63,9 @@ class BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       elevation: 0,
-      backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+      backgroundColor: Color.fromRGBO(240, 240, 255, 1),
+
+      // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
       items: bottomNavBarItems,
       currentIndex: GenFiles.selectedIndex,
       selectedItemColor: Theme.of(context).accentColor,

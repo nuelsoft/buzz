@@ -22,28 +22,18 @@ class ChannelListState extends State<ChannelList> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: () {
-          setState(() {
-            channels = AppTempData.channels;
-          });
-          return null;
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Container(
-          child: ListView.builder(
-              // physics: BouncingScrollPhysics(),
-              itemCount: channels.length,
-              itemBuilder: (context, index) {
-                return ChannelEntry(
-                    channelTitle: channels[index].channelTitle,
-                    channelId: channels[index].channelId,
-                    base: channels[index].channelBase,
-                    members: channels[index].channelMembers,
-                    currentBuzzes: channels[index].myCurrentBuzzes,
-                    index: index);
-              }),
-        ));
+    return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: channels.length,
+        itemBuilder: (context, index) {
+          return ChannelEntry(
+              channelTitle: channels[index].channelTitle,
+              channelId: channels[index].channelId,
+              base: channels[index].channelBase,
+              members: channels[index].channelMembers,
+              currentBuzzes: channels[index].myCurrentBuzzes,
+              index: index);
+        });
   }
 }
 
@@ -92,7 +82,7 @@ class ChannelEntryState extends State<ChannelEntry> {
               borderRadius: BorderRadius.all(Radius.circular(12))),
           elevation: 0,
           child: RaisedButton(
-            elevation: 2,
+            elevation: 1,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(12))),
             onPressed: () {

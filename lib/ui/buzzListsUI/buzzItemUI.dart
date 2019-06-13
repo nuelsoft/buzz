@@ -14,13 +14,13 @@ class BuzzItem extends StatelessWidget {
     switch (category) {
       case 0:
         return Icon(Icons.info,
-            size: 120, color: Color.fromRGBO(20, 20, 255, 0.1));
+            size: 100, color: Color.fromRGBO(20, 20, 255, 0.1));
       case 1:
         return Icon(Icons.event,
-            size: 120, color: Color.fromRGBO(20, 20, 255, 0.1));
+            size: 100, color: Color.fromRGBO(20, 20, 255, 0.1));
       case 2:
         return Icon(Icons.poll,
-            size: 120, color: Color.fromRGBO(20, 20, 255, 0.1));
+            size: 100, color: Color.fromRGBO(20, 20, 255, 0.1));
       default:
         return null;
     }
@@ -40,7 +40,7 @@ class BuzzItem extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: Text(buzz.title,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
             ),
             Column(
               children: <Widget>[
@@ -59,7 +59,7 @@ class BuzzItem extends StatelessWidget {
                             child: Text(buzz.msg,
                                 style: TextStyle(
                                   fontSize: 17,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w300,
                                 )))
                       ],
                     )),
@@ -127,7 +127,7 @@ class BuzzItem extends StatelessWidget {
                     ),
                   ],
                 )),
-            Divider(height: ((buzz.category == 0)? 50 : 15) )
+            Divider(height: 15)
           ]),
         ),
       ]),

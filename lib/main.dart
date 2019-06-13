@@ -3,6 +3,7 @@ import 'ui/channelList.dart';
 import 'ui/fabs.dart';
 import 'ui/makenjoin.dart';
 import 'core/appTempData.dart';
+import 'package:buzz/ui/drawerUI/drawerUI.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_ui/flutter_firebase_ui.dart';
 
@@ -12,7 +13,6 @@ class App extends StatelessWidget {
   // final FirebaseAuth _auth = FirebaseAuth.instance;
   // // StreamSubscription<FirebaseUser> _listener;
   // FirebaseUser _currentUser;
-
   @override
   Widget build(BuildContext context) {
     // if (_currentUser == null) {
@@ -38,20 +38,20 @@ class App extends StatelessWidget {
     //     padding: EdgeInsets.all(4),
     //   );
     // } else {
-      return MaterialApp(
-        title: 'Buzz',
-        theme: ThemeData(
-          primaryColor: Colors.white,
-          primaryColorDark: Colors.white,
-          accentColor: Color.fromRGBO(00, 00, 255, 1),
-        ),
-        // routes: <String, WidgetBuilder>{
-        //   '/enterChannel': (context) => InChannel(),
-        // },
-        home: AppHome(),
-      );
-    }
+    return MaterialApp(
+      title: 'Buzz',
+      theme: ThemeData(
+        primaryColor: Color.fromRGBO(249, 249, 255, 1),
+        primaryColorDark: Color.fromRGBO(249, 249, 255, 1),
+        accentColor: Color.fromRGBO(00, 00, 255, 1),
+      ),
+      // routes: <String, WidgetBuilder>{
+      //   '/enterChannel': (context) => InChannel(),
+      // },
+      home: AppHome(),
+    );
   }
+}
 // }
 
 class AppHome extends StatelessWidget {
@@ -61,7 +61,7 @@ class AppHome extends StatelessWidget {
       appBar: AppBar(
         title: Text('Buzz'),
         elevation: 0,
-        backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+        backgroundColor: Color.fromRGBO(240, 240, 255, 1),
       ),
       body: Container(
         child: ChannelList(
@@ -75,7 +75,8 @@ class AppHome extends StatelessWidget {
         },
         tooltip: 'Toogle add channel',
       ),
-      backgroundColor: Color.fromRGBO(249, 249, 255, 1),
+      backgroundColor: Color.fromRGBO(240, 240, 255, 1),
+      drawer: DrawerUI(),
     );
   }
 }

@@ -48,7 +48,7 @@ class LecturesState extends State<Lectures> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.white,
-      elevation: 2,
+      elevation: 1,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
       child: DefaultTabController(
