@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "815641556133",
-    "firebase_url": "https://buzz-17247.firebaseio.com",
-    "project_id": "buzz-17247",
-    "storage_bucket": "buzz-17247.appspot.com"
+    "project_number": "980991216984",
+    "firebase_url": "https://buzz-6ab99.firebaseio.com",
+    "project_id": "buzz-6ab99",
+    "storage_bucket": "buzz-6ab99.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:815641556133:android:961d49bc1cb91db6",
+        "mobilesdk_app_id": "1:980991216984:android:961d49bc1cb91db6",
         "android_client_info": {
           "package_name": "com.example.buzz"
         }
       },
       "oauth_client": [
         {
-          "client_id": "815641556133-fjoisflvki0m25k9o57onufc5glff3fc.apps.googleusercontent.com",
+          "client_id": "980991216984-uvr3p1d0sdah1etiu02h2jtm1036ueg4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.buzz",
-            "certificate_hash": "f3083220326664d6a2cfd844edf77103b0e07b64"
+            "certificate_hash": "a7dfdb9ab7df99eb7922f1b7b7f87cfc7d02b214"
           }
         },
         {
-          "client_id": "815641556133-di8jrlvmvru8872gs6j3mmvpjcij32gq.apps.googleusercontent.com",
+          "client_id": "980991216984-fvmpbm24m766id45ei8nfmkhe18oe0f4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBsrRAn4hPdc7_yNeWGIC0Ayq_l-zbFFb8"
+          "current_key": "AIzaSyDJYJxMezm0MOBvH5NGkqp6WZzze8kH1zI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "815641556133-di8jrlvmvru8872gs6j3mmvpjcij32gq.apps.googleusercontent.com",
+              "client_id": "980991216984-fvmpbm24m766id45ei8nfmkhe18oe0f4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

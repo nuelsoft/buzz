@@ -5,6 +5,8 @@ import 'lecture.dart';
 import 'poll.dart';
 import 'constants.dart';
 import 'buzz.dart';
+import 'package:buzz/core/me.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AppManager {
   ///
@@ -24,6 +26,9 @@ class AppManager {
   ///and is static in order to make it retain its value for every instance of the AppManager class
   ///
   static List<Channel> channels;
+
+  static Me user = Me();
+  static FirebaseUser firebaseUser;
 
   ///
   ///void addChannel(...) takes arguments that helps it create a channel and

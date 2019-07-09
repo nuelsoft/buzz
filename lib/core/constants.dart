@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+
+
 class Days {
   static final int monday = 0;
   static final int tuesday = 1;
@@ -11,4 +14,7 @@ class BuzzCategories{
   static final int info = 0;
   static final int event = 1;
   static final int poll = 2;
+}
+class ScaffoldKey{
+    static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 }

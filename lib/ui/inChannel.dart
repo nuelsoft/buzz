@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/appTempData.dart';
 import '../core/genFiles.dart';
 import 'pageView.dart';
+import 'package:buzz/ui/channelDashboard.dart';
 
 class InChannel extends StatelessWidget {
   final int index;
@@ -13,9 +14,19 @@ class InChannel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppTempData.channels[index].channelTitle),
+        title: GestureDetector(
+          child: Text(AppTempData.channels[index].channelTitle),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChannelDashboard(
+                          channel: AppTempData.channels[index],
+                        )));
+          },
+        ),
         // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
-              backgroundColor: Color.fromRGBO(240, 240, 255, 1),
+        backgroundColor: Color.fromRGBO(240, 240, 255, 1),
 
         elevation: 0,
       ),

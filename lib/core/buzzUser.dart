@@ -1,20 +1,24 @@
 import 'myChannel.dart';
-class BuzzUser{
+
+class BuzzUser {
   String displayName;
   String nickname;
   DateTime dateOfBirth;
   String gender;
+  bool isAdmin;
   String channelId;
+  String profileUrl;
+  String bio;
 
   List<MyChannel> myChannels;
 
-  BuzzUser({this.displayName, this.nickname, this.dateOfBirth, this.gender, this.channelId});
-
-  String getDisplayName(){return displayName;}
-  String getNickname(){return nickname;}
-  String getGender(){return gender;}
-  String getChannelId(){return channelId;}
-  DateTime getDOB(){return dateOfBirth;}
-  
-
+  BuzzUser(
+      {this.displayName,
+      this.nickname,
+      this.dateOfBirth,
+      this.gender,
+      this.channelId,
+      this.isAdmin,
+      this.profileUrl,
+      this.bio});
 }
