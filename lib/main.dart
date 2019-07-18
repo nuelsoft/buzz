@@ -6,6 +6,7 @@ import 'core/appManager.dart';
 import 'package:buzz/ui/drawerUI/drawerUI.dart';
 import 'package:buzz/ui/auth/master.dart';
 import 'package:buzz/ui/auth/portal/core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(App());
 
@@ -34,23 +35,7 @@ class AppHome extends StatefulWidget {
 
 class _AppHomeState extends State<AppHome> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  @override
-  void initState() {
-    if (AppManager.firebaseUser != null) {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(
-        duration: Duration(milliseconds: 2000),
-        content: Container(
-            child: Center(
-                child: Text(
-                    'Signed in as ${AppManager.firebaseUser.displayName}'))),
-      ));
-    } else {
-      Auth().signOut();
-    }
-    super.initState();
-  }
-
+  Firestore fstore = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,5 +62,31 @@ class _AppHomeState extends State<AppHome> {
       backgroundColor: Color.fromRGBO(240, 240, 255, 1),
       drawer: DrawerUI(),
     );
+  }
+
+  @override
+  void initState() {
+    Future<String> future = Auth().getCurrentUser();
+
+    future.then((userId) {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(milliseconds: 1000),
+        backgroundColor: Colors.grey[700],
+        content: Padding(
+            padding: EdgeInsets.all(4),
+            child: StreamBuilder(
+              stream:
+                  fstore.collection('userData').document(userId).snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data['name'] != null) {
+                  return Text('Signed in as ${snapshot.data['name']}');
+                }else {
+                  return Text('Loading User');
+                }
+              },
+            )),
+      ));
+    });
+    super.initState();
   }
 }

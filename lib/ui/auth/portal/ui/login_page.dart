@@ -500,7 +500,7 @@ class _LoginPageState extends State<LoginPage>
                               FontAwesomeIcons.user,
                               color: Colors.black,
                             ),
-                            hintText: "Name",
+                            hintText: "Your Full Name",
                             hintStyle: TextStyle(
                                 fontFamily: "WorkSansSemiBold", fontSize: 16.0),
                           ),
@@ -618,7 +618,8 @@ class _LoginPageState extends State<LoginPage>
                         signupConfirmPasswordController.text) {
                       Future<String> future = Auth().signUp(
                           signupEmailController.text,
-                          signupPasswordController.text);
+                          signupPasswordController.text,
+                          signupNameController.text);
                       future.catchError((onError) {
                         showInSnackBar(onError.toString());
                       });

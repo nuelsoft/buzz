@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../core/channel.dart';
 import 'notifyCard.dart';
-import '../core/appTempData.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'inChannel.dart';
+import 'package:buzz/core/appManager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChannelList extends StatefulWidget {
   final List<Channel> channels;
@@ -20,27 +21,52 @@ class ChannelListState extends State<ChannelList> {
   List<Channel> channels;
 
   ChannelListState({this.channels});
+  Firestore fstore = Firestore.instance;
 
   @override
   Widget build(BuildContext context) {
-    return ((channels != null || channels.length > 0))
-        ? ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: channels.length,
-            itemBuilder: (context, index) {
-              return ChannelEntry(
-                  channelTitle: channels[index].channelTitle,
-                  channelId: channels[index].channelId,
-                  base: channels[index].channelBase,
-                  members: channels[index].channelMembers,
-                  currentBuzzes: channels[index].myCurrentBuzzes,
-                  index: index);
-            })
-        : Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[Icon(FontAwesomeIcons.chalkboard), Text('No Channels yet!')],
-          ));
+    return StreamBuilder(
+      stream: fstore
+          .collection('userData')
+          .document(AppManager.myUserID)
+          .snapshots(),
+      builder: (builder, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+          default:
+            if (snapshot.hasData && snapshot.data['channels'] != null) {
+              return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: channels.length,
+                  itemBuilder: (context, index) {
+                    
+                    return ChannelEntry(
+                        channelTitle: channels[index].channelTitle,
+                        channelId: channels[index].channelId,
+                        base: channels[index].channelBase,
+                        members: channels[index].channelMembers,
+                        currentBuzzes: channels[index].myCurrentBuzzes,
+                        index: index);
+                  });
+            } else {
+              return Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    FontAwesomeIcons.chalkboard,
+                    size: 55,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 5, left: 15),
+                      child: Text('No Channels found'))
+                ],
+              ));
+            }
+        }
+      },
+    );
   }
 }
 

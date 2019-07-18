@@ -28,7 +28,7 @@ class AppManager {
   static List<Channel> channels;
 
   static Me user = Me();
-  static FirebaseUser firebaseUser;
+  static String myUserID;
 
   ///
   ///void addChannel(...) takes arguments that helps it create a channel and

@@ -3,19 +3,23 @@ import 'poll.dart';
 import 'course.dart';
 import 'allLectures.dart';
 import 'buzz.dart';
+
 class Channel {
   String channelTitle;
   String channelId;
+  String groupInfo;
   int myCurrentBuzzes;
   String channelBase;
   int channelMembers;
 
-  Channel(
-      {this.channelTitle,
-      this.channelId,
-      this.myCurrentBuzzes,
-      this.channelBase,
-      this.channelMembers});
+  Channel({
+    this.channelTitle,
+    this.channelId,
+    this.myCurrentBuzzes,
+    this.channelBase,
+    this.channelMembers,
+    this.groupInfo,
+  });
 
   List<BuzzUser> users;
   List<BuzzUser> admins;
@@ -23,10 +27,9 @@ class Channel {
   List<Course> courses;
   List<Buzz> buzzes;
 
-AllLectures allLectureDays;
+  AllLectures allLectureDays;
 
-
-  void addNewBuzz({Buzz buzz}){
+  void addNewBuzz({Buzz buzz}) {
     buzzes.add(buzz);
   }
 
