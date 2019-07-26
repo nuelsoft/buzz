@@ -4,6 +4,8 @@ import 'package:buzz/ui/makeModalBottomSheet.dart';
 import 'package:buzz/ui/joinModalBottomSheet.dart';
 import 'package:buzz/ui/about.dart';
 import 'package:buzz/ui/auth/portal/core.dart';
+import 'package:buzz/core/appManager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DrawerUI extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class DrawerUI extends StatefulWidget {
 }
 
 class DrawerUIState extends State<DrawerUI> {
+  Firestore fstore = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -22,13 +25,20 @@ class DrawerUIState extends State<DrawerUI> {
         child: ListView(physics: BouncingScrollPhysics(), children: <Widget>[
           UserAccountsDrawerHeader(
             currentAccountPicture: ClipOval(
-                child:
-                    // Image.asset('../../../images/yot.jpg', height: 100, width: 100, color: Colors.green,),
-                    Image.network(
-                        'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=format%2Ccompress&cs=tinysrgb&dpr=2&h=650&w=940',
-                        fit: BoxFit.cover)),
-            accountName: Text('@nuel \nEmmanuel Sunday'),
-            accountEmail: Text('nuel.mailbox@gmail.com'),
+                child: Image.network(
+                    'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=format%2Ccompress&cs=tinysrgb&dpr=2&h=650&w=940',
+                    fit: BoxFit.cover)),
+            accountName: StreamBuilder(
+              stream: fstore
+                  .collection('userData')
+                  .document(AppManager.myUserID)
+                  .snapshots(),
+              builder: (builder, snapshot) {
+                return Text(
+                    '${(snapshot.data['nickname'] == null) ? '@nonick' : snapshot.data['nickname']}\n${snapshot.data['name']}');
+              },
+            ),
+            accountEmail: Text(AppManager.myEmail),
             onDetailsPressed: () {
               Navigator.pop(context);
               Navigator.push(context,

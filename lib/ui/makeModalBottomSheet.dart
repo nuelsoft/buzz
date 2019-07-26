@@ -26,29 +26,31 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
       'institution': institutionController.text,
       'groupInfo': 'This is ${channelNameController.text}!',
       'channelMembers': 0,
-      'users': {
-        AppManager.myUserID: {
+      'users': [
+        {
           'userID': AppManager.myUserID,
           'joined':
               '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}',
           'isAdmin': true
         }
-      },
-      'admins': {
-        AppManager.myUserID: {
+      ],
+      'admins': [
+        {
           'userID': AppManager.myUserID,
           'joined':
               '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}'
         }
-      },
-      'polls': {},
-      'courses': {},
-      'buzzes': {},
+      ],
+      'polls': [],
+      'courses': [],
+      'buzzes': [],
       'created':
           '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}'
     });
     fstore.collection('userData').document(AppManager.myUserID).updateData({
-      'channels': FieldValue.arrayUnion([channelIdController.text])
+      'channels': FieldValue.arrayUnion([
+        {'channelId': channelIdController.text, 'currentNotification': 0}
+      ])
     });
     Navigator.pop(context);
   }
@@ -123,7 +125,7 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
                         validator: (val) {
                           return (val.length == 0)
                               ? 'Provide a Channel ID'
-                              : (val.contains(RegExp(r'[~`!@#$%^&*()_+<>?]')))
+                              : (val.contains(RegExp(r'[~`!@#$%^&*()-++<>?]')))
                                   ? 'Channel ID can\'t contain special characters'
                                   : (val.length != 6)
                                       ? 'Channel Id must be 6 Characters'

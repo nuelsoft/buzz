@@ -29,6 +29,11 @@ class AppManager {
 
   static Me user = Me();
   static String myUserID;
+  static String myEmail;
+  static String displayName;
+  static String nick;
+  static String bio;
+  static String phone;
 
   ///
   ///void addChannel(...) takes arguments that helps it create a channel and

@@ -48,9 +48,7 @@ class _AppHomeState extends State<AppHome> {
         backgroundColor: Color.fromRGBO(240, 240, 255, 1),
       ),
       body: Container(
-        child: ChannelList(
-          channels: AppManager.channels,
-        ),
+        child: ChannelList(),
       ),
       floatingActionButton: Fab(
         icon: Icon(Icons.add),
@@ -79,8 +77,9 @@ class _AppHomeState extends State<AppHome> {
                   fstore.collection('userData').document(userId).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData && snapshot.data['name'] != null) {
+                  AppManager.displayName = snapshot.data['name'];
                   return Text('Signed in as ${snapshot.data['name']}');
-                }else {
+                } else {
                   return Text('Loading User');
                 }
               },

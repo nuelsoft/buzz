@@ -7,20 +7,17 @@ import 'package:buzz/core/appManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChannelList extends StatefulWidget {
-  final List<Channel> channels;
-
-  ChannelList({this.channels});
+  // final List<Channel> channels;
 
   @override
   State<StatefulWidget> createState() {
-    return ChannelListState(channels: channels);
+    return ChannelListState();
   }
 }
 
 class ChannelListState extends State<ChannelList> {
-  List<Channel> channels;
+  // List<Channel> channels;
 
-  ChannelListState({this.channels});
   Firestore fstore = Firestore.instance;
 
   @override
@@ -35,20 +32,34 @@ class ChannelListState extends State<ChannelList> {
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           default:
-            if (snapshot.hasData && snapshot.data['channels'] != null) {
+            if (snapshot.hasData && snapshot.data['channels'].length != 0) {
               return ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: channels.length,
-                  itemBuilder: (context, index) {
-                    
-                    return ChannelEntry(
-                        channelTitle: channels[index].channelTitle,
-                        channelId: channels[index].channelId,
-                        base: channels[index].channelBase,
-                        members: channels[index].channelMembers,
-                        currentBuzzes: channels[index].myCurrentBuzzes,
-                        index: index);
-                  });
+                physics: BouncingScrollPhysics(),
+                itemCount: snapshot.data['channels'].length,
+                itemBuilder: (context, index) {
+                  return StreamBuilder(
+                    stream: fstore
+                        .collection('channels')
+                        .document(snapshot.data['channels'][index]['channelId'])
+                        .snapshots(),
+                    builder: (cardBuilder, cardSnapshot) {
+                      if (cardSnapshot.hasData && cardSnapshot.data != null) {
+                        return ChannelEntry(
+                            channelTitle: cardSnapshot.data['channelName'],
+                            channelId: cardSnapshot.data['channelId'],
+                            base: cardSnapshot.data['institution'],
+                            members: cardSnapshot.data['channelMembers'],
+                            currentBuzzes: snapshot.data['channels'][index]
+                                ['currentNotification']);
+                      } else {
+                        return Center(
+                          child: CircleAvatar(),
+                        );
+                      }
+                    },
+                  );
+                },
+              );
             } else {
               return Center(
                   child: Column(
@@ -79,7 +90,7 @@ class ChannelEntry extends StatefulWidget {
       this.base,
       this.members,
       this.currentBuzzes,
-      @required this.index});
+      this.index});
 
   @override
   State<StatefulWidget> createState() {
@@ -202,12 +213,21 @@ class ChannelEntryState extends State<ChannelEntry> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              channelId.toUpperCase(),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 15,
-                              ),
+                            Row(
+                              children: <Widget>[
+                                Text('ID:  ',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w100,
+                                        fontStyle: FontStyle.italic)),
+                                Text(
+                                  channelId.toUpperCase(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
                             ),
                             NotifyCard(unSeen: currentBuzzes),
                           ],
@@ -235,7 +255,10 @@ class ChannelEntryState extends State<ChannelEntry> {
                                       color: Colors.grey,
                                       size: 17,
                                     ),
-                                    Text(base),
+                                    Text(
+                                      base,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ],
                                 )),
                             Padding(
@@ -246,7 +269,12 @@ class ChannelEntryState extends State<ChannelEntry> {
                                   color: Colors.grey,
                                   size: 17,
                                 ),
-                                Text((members).toString() + " classmates")
+                                Text(
+                                  (members == 0)
+                                      ? 'No Members'
+                                      : (members).toString() + " classmates",
+                                  overflow: TextOverflow.ellipsis,
+                                )
                               ]),
                             )
                           ],

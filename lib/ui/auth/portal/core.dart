@@ -37,7 +37,7 @@ class Auth implements BaseAuth {
         'bio': 'Hi, I\'m $name',
         'phone': null,
         'location': 'Undetermined',
-        'channels': {}
+        'channels': []
       });
     }
     return user.uid;
@@ -46,6 +46,12 @@ class Auth implements BaseAuth {
   Future<String> getCurrentUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     AppManager.myUserID = user.uid;
+    AppManager.myEmail = user.email;
+    fstore.collection('userData').document(user.uid).get().then((val) {
+      AppManager.nick = val['nickname'];
+      AppManager.bio = val['bio'];
+      AppManager.phone = val['phone'];
+    });
     return user.uid;
   }
 
@@ -65,13 +71,14 @@ class Auth implements BaseAuth {
         .whenComplete(() {});
 
     if (user != null) {
+      // if(await fstore.collection('userData'))
       await fstore.collection('userData').document(user.uid).setData({
         'name': user.displayName,
         'nickname': null,
         'bio': 'Hi, I\'m ${user.displayName}',
         'phone': null,
         'location': 'Undetermined',
-        'channels': {}
+        'channels': []
       }, merge: true);
     }
     return 'success';
