@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../emptySpace.dart';
 
 class IsFixed extends StatelessWidget {
-  bool isFixed;
+  final bool isFixed;
   IsFixed({this.isFixed});
 
   @override

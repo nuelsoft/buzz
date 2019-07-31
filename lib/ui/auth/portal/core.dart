@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:buzz/core/appManager.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
@@ -16,6 +18,11 @@ class Auth implements BaseAuth {
   GoogleSignIn googleSignIn = GoogleSignIn(signInOption: SignInOption.standard);
   FirebaseUser user;
 
+  StorageReference storage = FirebaseStorage.instance
+      .ref()
+      .child('userProfilePicture/${AppManager.myUserID}');
+
+  Directory tempDir = Directory.systemTemp;
   Firestore fstore = Firestore.instance;
 
   Future<String> signIn(String email, String password) async {
@@ -44,6 +51,12 @@ class Auth implements BaseAuth {
   }
 
   Future<String> getCurrentUser() async {
+    AppManager.dp = File('${tempDir.path}/${AppManager.myUserID}');
+
+    if (AppManager.dp == null) {
+      storage.writeToFile(AppManager.dp);
+    }
+
     FirebaseUser user = await _firebaseAuth.currentUser();
     AppManager.myUserID = user.uid;
     AppManager.myEmail = user.email;
@@ -74,11 +87,11 @@ class Auth implements BaseAuth {
       // if(await fstore.collection('userData'))
       await fstore.collection('userData').document(user.uid).setData({
         'name': user.displayName,
-        'nickname': null,
-        'bio': 'Hi, I\'m ${user.displayName}',
-        'phone': null,
-        'location': 'Undetermined',
-        'channels': []
+        // 'nickname': null,
+        // 'bio': 'Hi, I\'m ${user.displayName}',
+        // 'phone': null,
+        // 'location': 'Undetermined',
+        // 'channels': []
       }, merge: true);
     }
     return 'success';

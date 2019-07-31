@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'ui/channelList.dart';
-import 'ui/fabs.dart';
-import 'ui/makenjoin.dart';
-import 'core/appManager.dart';
+import 'package:buzz/ui/channelList.dart';
+import 'package:buzz/ui/fabs.dart';
+import 'package:buzz/ui/makenjoin.dart';
+import 'package:buzz/core/appManager.dart';
 import 'package:buzz/ui/drawerUI/drawerUI.dart';
 import 'package:buzz/ui/auth/master.dart';
 import 'package:buzz/ui/auth/portal/core.dart';
@@ -16,17 +16,19 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Buzz',
       theme: ThemeData(
-          primaryColor: Color.fromRGBO(230, 230, 255, 1),
-          primaryColorDark: Color.fromRGBO(249, 249, 255, 1),
-          accentColor: Color.fromRGBO(00, 00, 255, 1),
-          canvasColor: Colors.transparent,
-          fontFamily: 'WorkSansMedium'),
+        primaryColor: Color.fromRGBO(230, 230, 255, 1),
+        primaryColorDark: Color.fromRGBO(249, 249, 255, 1),
+        accentColor: Color.fromRGBO(00, 00, 255, 1),
+        // canvasColor: Colors.transparent,
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'WorkSansMedium',
+      ),
+
       home: IsUser(appHome: AppHome()),
       // debugShowCheckedModeBanner: false,
     );
   }
 }
-// }
 
 class AppHome extends StatefulWidget {
   @override

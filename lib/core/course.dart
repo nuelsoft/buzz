@@ -1,4 +1,3 @@
-import 'recommendedText.dart';
 
 class Course {
   String courseTitle;
@@ -7,7 +6,7 @@ class Course {
   String lecturerOffice;
   int unitLoad;
   String channelId;
-  List<RecommendedText> recommendedText;
+  String recommendedText;
    Course(
       {this.courseTitle,
       this.courseCode,

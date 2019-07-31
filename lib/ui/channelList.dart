@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/channel.dart';
+// import '../core/channel.dart';
 import 'notifyCard.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'inChannel.dart';
@@ -53,7 +53,7 @@ class ChannelListState extends State<ChannelList> {
                                 ['currentNotification']);
                       } else {
                         return Center(
-                          child: CircleAvatar(),
+                          child: CircularProgressIndicator(),
                         );
                       }
                     },
@@ -83,19 +83,18 @@ class ChannelListState extends State<ChannelList> {
 
 class ChannelEntry extends StatefulWidget {
   final String channelTitle, channelId, base;
-  final int members, currentBuzzes, index;
+  final int members, currentBuzzes;
   ChannelEntry(
       {this.channelTitle,
       this.channelId,
       this.base,
       this.members,
       this.currentBuzzes,
-      this.index});
+      });
 
   @override
   State<StatefulWidget> createState() {
     return ChannelEntryState(
-        index: index,
         channelTitle: channelTitle,
         channelId: channelId,
         base: base,
@@ -106,7 +105,7 @@ class ChannelEntry extends StatefulWidget {
 
 class ChannelEntryState extends State<ChannelEntry> {
   String channelTitle, channelId, base;
-  int members, currentBuzzes, index;
+  int members, currentBuzzes;
 
   ChannelEntryState(
       {this.channelTitle,
@@ -114,7 +113,7 @@ class ChannelEntryState extends State<ChannelEntry> {
       this.base,
       this.members,
       this.currentBuzzes,
-      @required this.index});
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +134,7 @@ class ChannelEntryState extends State<ChannelEntry> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => InChannel(
-                            index: index,
+                            channelID: channelId,
                           )));
             },
             color: Colors.white,

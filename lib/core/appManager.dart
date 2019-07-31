@@ -1,12 +1,13 @@
 import 'channel.dart';
 import 'buzzUser.dart';
-import 'course.dart';
-import 'lecture.dart';
+// import 'course.dart';
+// import 'lecture.dart';
 import 'poll.dart';
-import 'constants.dart';
+// import 'constants.dart';
 import 'buzz.dart';
 import 'package:buzz/core/me.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 
 class AppManager {
   ///
@@ -34,6 +35,7 @@ class AppManager {
   static String nick;
   static String bio;
   static String phone;
+  static File dp;
 
   ///
   ///void addChannel(...) takes arguments that helps it create a channel and
@@ -76,15 +78,14 @@ class AppManager {
 
   List<Buzz> getBuzzList({int channelIndex, int buzzCategory, bool all}) {
     List<Buzz> localList = [];
-        if (!all) {
-          for (var buzz in channels[channelIndex].buzzes) {
-            if (buzz.category == buzzCategory) {
-              localList.add(buzz);
-            }
-          }
-        } else {
-          localList = channels[channelIndex].buzzes;
-        
+    if (!all) {
+      for (var buzz in channels[channelIndex].buzzes) {
+        if (buzz.category == buzzCategory) {
+          localList.add(buzz);
+        }
+      }
+    } else {
+      localList = channels[channelIndex].buzzes;
     }
 
     return localList;

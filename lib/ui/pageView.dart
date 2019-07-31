@@ -5,22 +5,22 @@ import 'buzzesUI.dart';
 import '../core/genFiles.dart';
 
 class MainPageView extends StatefulWidget {
-  final int channelIndex;
+  final String channelID;
   final PageController pgc;
 
-  MainPageView({this.channelIndex, this.pgc});
+  MainPageView({this.channelID, this.pgc});
 
   @override
   State<StatefulWidget> createState() {
-    return MainPageViewState(channelIndex: channelIndex, pgc: pgc);
+    return MainPageViewState(channelID: channelID, pgc: pgc);
   }
 }
 
 class MainPageViewState extends State<MainPageView> {
-  final int channelIndex;
+  final String channelID;
   final PageController pgc;
 
-  MainPageViewState({this.channelIndex, this.pgc});
+  MainPageViewState({this.channelID, this.pgc});
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +35,11 @@ class MainPageViewState extends State<MainPageView> {
       physics: BouncingScrollPhysics(),
       // physics:
       children: <Widget>[
-        Lectures(channelIndex: channelIndex),
+        Lectures(channelID: channelID),
         Courses(
-          channelIndex: channelIndex,
+          channelID: channelID,
         ),
-        Buzzes(channelIndex: channelIndex)
+        Buzzes(channelID: channelID)
       ],
     );
   }

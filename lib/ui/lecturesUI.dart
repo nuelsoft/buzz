@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
-import 'lectureDay.dart';
 import '../core/constants.dart' show Days;
 import 'tickerProv.dart' show VState;
+import 'package:buzz/ui/lectureListUI/lectureList.dart';
+import 'package:buzz/core/genFiles.dart';
 
 class Lectures extends StatefulWidget {
-  final int channelIndex;
-  Lectures({this.channelIndex});
+  final String channelID;
+  Lectures({this.channelID});
 
   @override
   State<StatefulWidget> createState() {
-    return LecturesState(channelIndex: channelIndex);
+    return LecturesState(channelID: channelID);
   }
 }
 
 class LecturesState extends State<Lectures> with AutomaticKeepAliveClientMixin {
-  int channelIndex;
-  LecturesState({this.channelIndex});
+  String channelID;
+  LecturesState({this.channelID});
 
   static final List<Widget> tabs = [
     Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('MON')),
     Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('TUE')),
-    Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('THU')),
     Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('WED')),
+    Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('THU')),
     Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('FRI')),
     Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Text('SAT')),
   ];
@@ -34,12 +35,14 @@ class LecturesState extends State<Lectures> with AutomaticKeepAliveClientMixin {
       TabController(length: tabs.length, vsync: VState(), initialIndex: 0);
   _pageChanged(index) {
     setState(() {
+      GenFiles.innerSelectedIndex = index;
       tbControl.animateTo(index,
           curve: Curves.easeInSine, duration: Duration(milliseconds: 200));
     });
   }
 
   _tapped(index) {
+    GenFiles.innerSelectedIndex = index;
     pgControl.animateToPage(index,
         curve: Curves.easeInSine, duration: Duration(milliseconds: 200));
   }
@@ -71,26 +74,26 @@ class LecturesState extends State<Lectures> with AutomaticKeepAliveClientMixin {
               onPageChanged: _pageChanged,
               physics: BouncingScrollPhysics(),
               children: <Widget>[
-                LectureDay(day: Days.monday, channelIndex: channelIndex),
-                LectureDay(
-                  day: Days.tuesday,
-                  channelIndex: channelIndex,
+                LectureList(dayOfWeek: Days.monday, channelID: channelID),
+                LectureList(
+                  dayOfWeek: Days.tuesday,
+                  channelID: channelID,
                 ),
-                LectureDay(
-                  day: Days.wednesday,
-                  channelIndex: channelIndex,
+                LectureList(
+                  dayOfWeek: Days.wednesday,
+                  channelID: channelID,
                 ),
-                LectureDay(
-                  day: Days.thursday,
-                  channelIndex: channelIndex,
+                LectureList(
+                  dayOfWeek: Days.thursday,
+                  channelID: channelID,
                 ),
-                LectureDay(
-                  day: Days.friday,
-                  channelIndex: channelIndex,
+                LectureList(
+                  dayOfWeek: Days.friday,
+                  channelID: channelID,
                 ),
-                LectureDay(
-                  day: Days.saturday,
-                  channelIndex: channelIndex,
+                LectureList(
+                  dayOfWeek: Days.saturday,
+                  channelID: channelID,
                 ),
               ],
             ))

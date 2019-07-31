@@ -24,10 +24,8 @@ class DrawerUIState extends State<DrawerUI> {
         color: Colors.white,
         child: ListView(physics: BouncingScrollPhysics(), children: <Widget>[
           UserAccountsDrawerHeader(
-            currentAccountPicture: ClipOval(
-                child: Image.network(
-                    'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=format%2Ccompress&cs=tinysrgb&dpr=2&h=650&w=940',
-                    fit: BoxFit.cover)),
+            currentAccountPicture:
+                ClipOval(child: Image.file(AppManager.dp, fit: BoxFit.cover)),
             accountName: StreamBuilder(
               stream: fstore
                   .collection('userData')
@@ -35,7 +33,7 @@ class DrawerUIState extends State<DrawerUI> {
                   .snapshots(),
               builder: (builder, snapshot) {
                 return Text(
-                    '${(snapshot.data['nickname'] == null) ? '@nonick' : snapshot.data['nickname']}\n${snapshot.data['name']}');
+                    '${(snapshot.data['nickname'] == null) ? '@nonick' : "@" + snapshot.data['nickname']}\n${snapshot.data['name']}');
               },
             ),
             accountEmail: Text(AppManager.myEmail),

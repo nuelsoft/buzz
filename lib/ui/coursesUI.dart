@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'courseListUI/courseList.dart';
 
 class Courses extends StatefulWidget {
-  final int channelIndex;
-  Courses({this.channelIndex});
+  final String channelID;
+  Courses({this.channelID});
 
   @override
     State<StatefulWidget> createState() {
-      return CoursesState(channelIndex: channelIndex);
+      return CoursesState(channelID: channelID);
     }
 }
 
 class CoursesState extends State<Courses>  with AutomaticKeepAliveClientMixin{
-  final int channelIndex;
-  CoursesState({this.channelIndex});
+  final String channelID;
+  CoursesState({this.channelID});
 
   @override
     bool get wantKeepAlive => true;
@@ -26,7 +26,7 @@ class CoursesState extends State<Courses>  with AutomaticKeepAliveClientMixin{
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16))),
         child: CourseList(
-          channelIndex: channelIndex,
+          channelID: channelID,
         ));
   }
 }

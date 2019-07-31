@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:buzz/core/channel.dart';
-import 'package:buzz/core/buzzUser.dart';
+// import 'package:buzz/core/buzzUser.dart';
 import 'package:buzz/ui/person.dart';
-import 'package:buzz/ui/auth/master.dart';
+// import 'package:buzz/ui/auth/master.dart';
 
 class ChannelDashboard extends StatefulWidget {
-  final Channel channel;
+  final String channelID;
 
-  ChannelDashboard({this.channel});
+  ChannelDashboard({this.channelID});
   @override
   State<StatefulWidget> createState() {
-    return ChannelDashboardState(channel: channel);
+    return ChannelDashboardState(channelID: channelID);
   }
 }
 
 class ChannelDashboardState extends State<ChannelDashboard> {
-  final Channel channel;
-  ChannelDashboardState({this.channel});
+  final String channelID;
+  ChannelDashboardState({this.channelID});
   bool _switchVal = false;
 
   _switchOnChange(bool value) {
@@ -47,10 +47,12 @@ class ChannelDashboardState extends State<ChannelDashboard> {
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  title: Text(
-                    channel.channelTitle,
-                    style: TextStyle(fontSize: 18),
-                    overflow: TextOverflow.fade,
+                  title: 
+                  Text(
+                    // channel.channelTitle,
+                    // style: TextStyle(fontSize: 18),
+                    // overflow: TextOverflow.fade,
+                  'hi'
                   ),
                   background: Image.network(
                     'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=format%2Ccompress&cs=tinysrgb&dpr=2&h=650&w=940',
@@ -118,13 +120,13 @@ class ChannelDashboardState extends State<ChannelDashboard> {
                             fontSize: 19, fontWeight: FontWeight.w400),
                       ),
                     )),
-                (channel.users != null && channel.users.length > 0)
-                    ? ListView.builder(
-                        itemCount: channel.users.length,
-                        itemBuilder: (context, index) {
-                          PersonItem(buzzUser: channel.users[index]);
-                        })
-                    : Center(child: Text('No Members'))
+                // (channel.users != null && channel.users.length > 0)
+                //     ? ListView.builder(
+                //         itemCount: channel.users.length,
+                //         itemBuilder: (context, index) {
+                //           PersonItem(buzzUser: channel.users[index]);
+                //         })
+                //     : Center(child: Text('No Members'))
               ]),
             ),
           )),

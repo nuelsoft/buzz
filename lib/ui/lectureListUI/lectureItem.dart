@@ -14,7 +14,7 @@ class LectureItemUI extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(children: [
-            FlatButton(
+            RaisedButton(
               onPressed: () {},
               color: Color.fromRGBO(235, 235, 255, 1),
               shape: RoundedRectangleBorder(
@@ -38,13 +38,13 @@ class LectureItemUI extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   left: BorderSide(
-                      width: 3, color: Color.fromRGBO(203, 204, 204, 1)),
+                      width: 3, color: Color.fromRGBO(223, 223, 223, 1)),
                 ),
               ),
               child: Padding(
                 padding: EdgeInsets.all(4),
-                child: RaisedButton(
-                  elevation: 3,
+                child: FlatButton(
+                  // elevation: 3,
                   onPressed: () {},
                   color: Color.fromRGBO(244, 244, 244, 1),
                   shape: RoundedRectangleBorder(

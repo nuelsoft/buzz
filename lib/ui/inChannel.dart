@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import '../core/appTempData.dart';
 import '../core/genFiles.dart';
 import 'pageView.dart';
 import 'package:buzz/ui/channelDashboard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:buzz/ui/fabs.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InChannel extends StatelessWidget {
-  final int index;
-
-  InChannel({@required this.index});
+  final Firestore fstore = Firestore.instance;
+  final String channelID;
+  InChannel({this.channelID});
 
   final PageController pgc = PageController(initialPage: 0, keepPage: true);
   @override
@@ -15,14 +17,19 @@ class InChannel extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
-          child: Text(AppTempData.channels[index].channelTitle),
+          child: StreamBuilder(
+            stream:
+                fstore.collection('channels').document(channelID).snapshots(),
+            builder: (builder, snapshot) {
+              return Text(snapshot.data['channelName']);
+            },
+          ),
           onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ChannelDashboard(
-                          channel: AppTempData.channels[index],
-                        )));
+                    builder: (context) =>
+                        ChannelDashboard(channelID: channelID)));
           },
         ),
         // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
@@ -30,7 +37,11 @@ class InChannel extends StatelessWidget {
 
         elevation: 0,
       ),
-      body: MainPageView(channelIndex: index, pgc: pgc),
+      // body: Container(),
+      body: MainPageView(channelID: channelID, pgc: pgc),
+      floatingActionButton: InchannelFab(
+        channelID: channelID,
+      ),
       bottomNavigationBar: BottomNavBar(pageController: pgc),
       // backgroundColor: Color.fromRGBO(249, 249, 255, 1),
       backgroundColor: Color.fromRGBO(240, 240, 255, 1),
@@ -43,7 +54,7 @@ class BottomNavBar extends StatefulWidget {
   final List<BottomNavigationBarItem> bottomNavItems = [
     BottomNavigationBarItem(
       title: Text('Lectures'),
-      icon: Icon(Icons.insert_chart),
+      icon: Icon(FontAwesomeIcons.chalkboardTeacher),
     ),
     BottomNavigationBarItem(
       title: Text('Courses'),
@@ -51,7 +62,7 @@ class BottomNavBar extends StatefulWidget {
     ),
     BottomNavigationBarItem(
       title: Text('Buzzes'),
-      icon: Icon(Icons.alarm),
+      icon: Icon(FontAwesomeIcons.bell),
     )
   ];
 

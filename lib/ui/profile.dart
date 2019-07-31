@@ -4,6 +4,9 @@ import 'package:buzz/core/appManager.dart';
 import 'package:buzz/ui/modalInput.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+// import 'dart:io';
+import 'package:buzz/ui/emptySpace.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -14,20 +17,42 @@ class UserProfile extends StatefulWidget {
 
 class UserProfileState extends State<UserProfile> {
   Firestore fstore = Firestore.instance;
+  StorageReference storage = FirebaseStorage.instance
+      .ref()
+      .child('userProfilePicture/${AppManager.myUserID}');
 
   // Future getPosition() async{
   //   GeolocationStatus geolocationStatus  = await Geolocator().checkGeolocationPermissionStatus();
   //   geo
   // }
   var file;
+  bool isProfileChanging = false;
 
-  selectPicture(String src) async {
+  Future<void> selectPicture(String src) async {
     file = await ImagePicker.pickImage(
       source: (src == 'camera') ? ImageSource.camera : ImageSource.gallery,
     );
     recoverLostData();
-    setState(() {});
     Navigator.pop(context);
+    isProfileChanging = true;
+
+    StorageUploadTask uploadImage = storage.putFile(
+        file, StorageMetadata(contentType: 'Image/ Profile Picture'));
+    StorageTaskSnapshot downloadUrl = await uploadImage.onComplete;
+
+    String actualUrl = await downloadUrl.ref.getDownloadURL();
+    fstore
+        .collection('userData')
+        .document(AppManager.myUserID)
+        .setData({'profileUrl': actualUrl}, merge: true);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+      return UserProfile();
+    }));
+    setState(() {
+      isProfileChanging = false;
+      storage.writeToFile(AppManager.dp);
+      print('finished the processed:: first');
+    });
   }
 
   Future<void> recoverLostData() async {
@@ -89,7 +114,7 @@ class UserProfileState extends State<UserProfile> {
                                               ),
                                               ListTile(
                                                 onTap: () {
-                                                  selectPicture('gallery');
+                                                  selectPicture('camera');
                                                 },
                                                 leading: Icon(Icons.photo),
                                                 title: Text('Gallery'),
@@ -115,23 +140,17 @@ class UserProfileState extends State<UserProfile> {
                     background: Stack(
                       fit: StackFit.expand,
                       children: <Widget>[
-                        (file != null)
-                            ? Image.file(
-                                file,
+                        (AppManager.dp == null)
+                            ? Icon(Icons.person)
+                            : Image.file(
+                                AppManager.dp,
                                 fit: BoxFit.cover,
-                                color: Color.fromRGBO(0, 0, 255, 0.2),
-                                colorBlendMode: BlendMode.darken,
-                              )
-                            : Icon(
-                                Icons.person,
-                                size: 270,
-                                color: Color.fromRGBO(170, 170, 255, 1),
                               ),
-                        // Center(
-                        //   child: Padding(
-                        //       padding: EdgeInsets.only(top: 16),
-                        //       child: CircularProgressIndicator()),
-                        // )
+                        (isProfileChanging)
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : EmptySpace()
                       ],
                     )),
               )
