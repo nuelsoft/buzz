@@ -3,15 +3,24 @@ import 'buzzListsUI/allBuzzList.dart';
 import 'buzzListsUI/eventBuzzList.dart';
 import 'buzzListsUI/infoBuzzLIst.dart';
 import 'buzzListsUI/pollBuzzList.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:buzz/core/appManager.dart';
-import 'package:buzz/core/constants.dart';
+// import 'package:buzz/core/constants.dart';
 import 'package:buzz/ui/tickerProv.dart';
 
 class Buzzes extends StatefulWidget {
   final String channelID;
   Buzzes({this.channelID});
+  final Firestore fstore = Firestore.instance;
   @override
   State<StatefulWidget> createState() {
+    fstore.collection('channels').document(channelID).get().then((val) {
+      fstore.collection('userData').document(AppManager.myUserID).setData({
+        'channelLog': {
+          channelID: {'currentNotifications': val.data['currentNotifications']}
+        }
+      }, merge: true);
+    });
     return BuzzesState(channelID: channelID);
   }
 }
@@ -86,42 +95,18 @@ class BuzzesState extends State<Buzzes> with AutomaticKeepAliveClientMixin {
                   physics: NeverScrollableScrollPhysics(),
                   onPageChanged: _pageChanged,
                   children: <Widget>[
+                    AllBuzz(channelID: channelID),
                     // (AppManager.channels.length >= channelIndex + 1 &&
-                    // (AppManager.channels != null)
-                    //     ? AllBuzz(
-                    //         buzzes: AppManager().getBuzzList(
-                    //             all: true, channelID: channelID))
-                    //     : Center(
-                    //         child: Text('No records!'),
-                    //       ),
-                    // // (AppManager.channels.length >= channelIndex + 1 &&
-                    // (AppManager.channels != null)
-                    //     ? InfoBuzz(
-                    //         infos: AppManager().getBuzzList(
-                    //             buzzCategory: BuzzCategories.info,
-                    //             channelID: channelID,
-                    //             all: false))
-                    //     : Center(
-                    //         child: Text('Err.. Nothing here!'),
-                    //       ),
-                    // // (AppManager.channels.length >= channelIndex + 1 &&
-                    // (AppManager.channels != null)
-                    //     ? EventBuzz(
-                    //         events: AppManager().getBuzzList(
-                    //             buzzCategory: BuzzCategories.event,
-                    //             channelID: channelID,
-                    //             all: false))
-                    //     : Center(child: Text('Nothing found!')),
-                    // // (AppManager.channels.length >= channelIndex + 1 &&
-                    // (AppManager.channels != null)
-                    //     ? PollBuzz(
-                    //         polls: AppManager().getBuzzList(
-                    //             buzzCategory: BuzzCategories.poll,
-                    //             channelID: channelID,
-                    //             all: false))
-                    //     : Center(
-                    //         child: Text('No poll Records found'),
-                    //       )
+                    InfoBuzz(
+                      channelID: channelID,
+                    ),
+                    EventBuzz(
+                      channelID: channelID,
+                    ),
+                    // (AppManager.channels.length >= channelIndex + 1 &&
+                    PollBuzz(
+                      channelID: channelID,
+                    )
                   ]),
             )
           ]),

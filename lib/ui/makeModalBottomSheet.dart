@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:buzz/core/appManager.dart';
+import 'package:buzz/main.dart';
 
 class MakeModalBottomSheet extends StatefulWidget {
+  final Key key;
+  MakeModalBottomSheet({this.key});
   @override
   State<StatefulWidget> createState() {
     return MakeModalBottomSheetState();
@@ -17,22 +20,27 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
   Firestore fstore = Firestore.instance;
 
   final _formKey = GlobalKey<FormState>();
+  bool isExisting = false;
 
-  void validateAndMake() {
+  Future<void> validateAndMake() async {
     fstore.collection('channels').document(channelIdController.text).setData({
       'channelName': channelNameController.text,
       'channelId': channelIdController.text,
       'creator': AppManager.myUserID,
       'institution': institutionController.text,
       'groupInfo': 'This is ${channelNameController.text}!',
-      'channelMembers': 0,
-      'users': [
-        {
-          'userID': AppManager.myUserID,
+      'channelMembers': 1,
+      'channelPicture': null,
+      'currentNotifications': 0,
+      'users': {
+        AppManager.myUserID: {
           'joined':
               '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}',
           'isAdmin': true
         }
+      },
+      'usersOrder': [
+        AppManager.myUserID
       ],
       'admins': [
         {
@@ -41,17 +49,24 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
               '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}'
         }
       ],
+      'joinRequests': [],
       'polls': [],
       'courses': [],
+      'coursesOrder': [],
       'buzzes': [],
       'created':
           '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}'
     });
-    fstore.collection('userData').document(AppManager.myUserID).updateData({
-      'channels': FieldValue.arrayUnion([
-        {'channelId': channelIdController.text, 'currentNotification': 0}
-      ])
-    });
+    fstore.collection('userData').document(AppManager.myUserID).setData({
+      'channels': FieldValue.arrayUnion([channelIdController.text])
+    }, merge: true);
+
+    fstore.collection('userData').document(AppManager.myUserID).setData({
+      'channelLog': {
+        channelIdController.text: {'currentNotifications': 0}
+      }
+    }, merge: true);
+
     Navigator.pop(context);
   }
 
@@ -63,14 +78,16 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
           padding: MediaQuery.of(context).viewInsets,
           duration: Duration(milliseconds: 500),
           child: Container(
-            height: 350,
+            height: 400,
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(18),
                   topLeft: Radius.circular(18),
                 )),
-            child: ListView(physics: BouncingScrollPhysics(), children: [
+            child: ListView(
+              padding: EdgeInsets.only(bottom: 50),
+              physics: BouncingScrollPhysics(), children: [
               Form(
                 key: _formKey,
                 // autovalidate: true,
@@ -121,15 +138,27 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
                                     BorderRadius.all(Radius.circular(15)))),
                         autocorrect: false,
                         textCapitalization: TextCapitalization.characters,
-                        // autovalidate: true,
+                        autovalidate: true,
                         validator: (val) {
+                          fstore
+                              .collection('channels')
+                              .document(val)
+                              .get()
+                              .then((snp) {
+                            print('match found');
+                            setState(() {
+                              isExisting = (snp.exists);
+                            });
+                          });
                           return (val.length == 0)
                               ? 'Provide a Channel ID'
                               : (val.contains(RegExp(r'[~`!@#$%^&*()-++<>?]')))
                                   ? 'Channel ID can\'t contain special characters'
                                   : (val.length != 6)
                                       ? 'Channel Id must be 6 Characters'
-                                      : null;
+                                      : (isExisting)
+                                          ? 'Channel already exists'
+                                          : null;
                         },
                         keyboardType: TextInputType.text,
                       ),
@@ -173,6 +202,7 @@ class MakeModalBottomSheetState extends State<MakeModalBottomSheet> {
                     color: Theme.of(context).accentColor,
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
+                        // _formKey.currentState.validate();
                         validateAndMake();
                       }
                     },

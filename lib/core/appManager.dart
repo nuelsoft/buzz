@@ -7,7 +7,7 @@ import 'poll.dart';
 import 'buzz.dart';
 import 'package:buzz/core/me.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:io';
+// import 'dart:io';
 
 class AppManager {
   ///
@@ -35,7 +35,9 @@ class AppManager {
   static String nick;
   static String bio;
   static String phone;
-  static File dp;
+  static String dp;
+
+  static String appversion = 'beta';
 
   ///
   ///void addChannel(...) takes arguments that helps it create a channel and

@@ -6,6 +6,14 @@ import 'package:buzz/ui/about.dart';
 import 'package:buzz/ui/auth/portal/core.dart';
 import 'package:buzz/core/appManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cache_image/cache_image.dart';
+// import 'package:buzz/ui/emptySpace.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:buzz/main.dart';
+import 'dart:io';
+// import 'package:firebase_admob/firebase_admob.dart';
+// import '';
+
 
 class DrawerUI extends StatefulWidget {
   @override
@@ -16,16 +24,63 @@ class DrawerUI extends StatefulWidget {
 
 class DrawerUIState extends State<DrawerUI> {
   Firestore fstore = Firestore.instance;
+  void launchUrl(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      AppHome().showSnack('Install a Mail app to continue');
+    }
+  }
+
+  bool hasInternet = false;
+  Future<void> getInternetStatus() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        hasInternet = true;
+        print('has internet');
+      }
+    } on SocketException catch (_) {
+      hasInternet = false;
+      print('no internet');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getInternetStatus();
+
     return Drawer(
       elevation: 2,
       child: Container(
         color: Colors.white,
         child: ListView(physics: BouncingScrollPhysics(), children: <Widget>[
           UserAccountsDrawerHeader(
-            currentAccountPicture:
-                ClipOval(child: Image.file(AppManager.dp, fit: BoxFit.cover)),
+            currentAccountPicture: ClipOval(
+                child: StreamBuilder(
+              stream: fstore
+                  .collection('userData')
+                  .document(AppManager.myUserID)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                while (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasData) {
+                  print(AppManager.dp);
+                  return (AppManager.dp != null)
+                      ? Image.network(
+                          AppManager.dp,
+                          fit: BoxFit.cover,
+                          height: 80,
+                        )
+                      : Icon(
+                          Icons.person,
+                          size: 40,
+                        );
+                }
+              },
+            )),
             accountName: StreamBuilder(
               stream: fstore
                   .collection('userData')
@@ -67,6 +122,12 @@ class DrawerUIState extends State<DrawerUI> {
           ListTile(
             onTap: () {
               Navigator.pop(context);
+              getInternetStatus();
+              if (!hasInternet) {
+                AppHome().showSnack('Connect to the internet to Make channel');
+                // Navigator.pop(context);
+                return;
+              }
               showModalBottomSheet(
                   context: context,
                   builder: (context) => MakeModalBottomSheet());
@@ -85,6 +146,12 @@ class DrawerUIState extends State<DrawerUI> {
           ListTile(
             onTap: () {
               Navigator.pop(context);
+              getInternetStatus();
+              if (!hasInternet) {
+                AppHome().showSnack('Connect to the internet to Join channel');
+                // Navigator.pop(context);
+                return;
+              }
               showModalBottomSheet(
                   context: context, builder: (context) => JoinChannelModal());
             },
@@ -103,33 +170,36 @@ class DrawerUIState extends State<DrawerUI> {
                 style: TextStyle(
                     fontSize: 15, color: Color.fromRGBO(100, 100, 100, 1))),
           ),
-          ListTile(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              title: Text('Remove Ads'),
-              leading: Icon(Icons.remove_circle,
-                  color: Color.fromRGBO(
-                    100,
-                    100,
-                    100,
-                    1,
-                  ))),
+          // ListTile(
+          //     onTap: () {
+          //       Navigator.pop(context);
+          //     },
+          //     title: Text('Remove Ads'),
+          //     leading: Icon(Icons.remove_circle,
+          //         color: Color.fromRGBO(
+          //           100,
+          //           100,
+          //           100,
+          //           1,
+          //         ))),
+          // ListTile(
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //   },
+          //   title: Text('Settings'),
+          //   leading: Icon(Icons.settings,
+          //       color: Color.fromRGBO(
+          //         100,
+          //         100,
+          //         100,
+          //         1,
+          //       )),
+          // ),
           ListTile(
             onTap: () {
-              Navigator.pop(context);
-            },
-            title: Text('Settings'),
-            leading: Icon(Icons.settings,
-                color: Color.fromRGBO(
-                  100,
-                  100,
-                  100,
-                  1,
-                )),
-          ),
-          ListTile(
-            onTap: () {
+              const mail =
+                  'mailto:buzz.mailapp@gmail.com?subject=Buzz%20App%20Review&body=My%20Review';
+              launchUrl(mail);
               Navigator.pop(context);
             },
             title: Text('Review'),
@@ -165,6 +235,8 @@ class DrawerUIState extends State<DrawerUI> {
                 )),
             title: Text('Sign out'),
             onTap: () {
+              AppManager.myUserID = '';
+              AppManager.displayName= '';
               Navigator.pop(context);
               Auth().signOut();
             },

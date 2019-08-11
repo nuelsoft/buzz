@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'isFixed.dart';
 import '../../core/lecture.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 
 class LectureItemUI extends StatelessWidget {
   final Lecture lecture;
-  LectureItemUI({this.lecture});
+  final String channelID;
+  final String dayOfWeek;
+  final String ds;
+  final lecturesOrder;
+  final Firestore fstore = Firestore.instance;
+  LectureItemUI(
+      {this.lecture,
+      this.channelID,
+      this.dayOfWeek,
+      this.ds,
+      this.lecturesOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +33,7 @@ class LectureItemUI extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               child: Center(
-                  child: Text(
-                      "${lecture.startTime} - ${lecture.endTime}")),
+                  child: Text("${lecture.startTime} - ${lecture.endTime}")),
             ),
             Padding(
                 padding: EdgeInsets.only(left: 8),
@@ -45,7 +56,57 @@ class LectureItemUI extends StatelessWidget {
                 padding: EdgeInsets.all(4),
                 child: FlatButton(
                   // elevation: 3,
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: 100,
+                            child: Padding(
+                                padding: EdgeInsets.all(0),
+                                child: ListView(
+                                  physics: BouncingScrollPhysics(),
+                                  children: <Widget>[
+                                    ListTile(
+                                        title: Text('Remove Lecture'),
+                                        onTap: () {
+                                          // fstore
+                                          //     .collection('channels')
+                                          //     .document(channelID)
+                                          //     .setData({
+                                          //   'lecturesOrder': {
+                                          //     dayOfWeek: {
+                                          //       FieldValue.arrayRemove(
+                                          //           [lecturesOrder])
+                                          //     }
+                                          //   }
+                                          // }, merge: true);
+
+                                          fstore
+                                              .collection('channels')
+                                              .document(channelID)
+                                              .setData({
+                                            'lectures': {
+                                              dayOfWeek: {ds: null}
+                                            }
+                                          }, merge: true);
+                                          Navigator.pop(context);
+                                          // fstore
+                                          //     .collection('channels')
+                                          //     .document(channelID)
+                                          //     .setData({
+                                          //   'lectures': {
+                                          //     dayOfWeek: {
+                                          //       FieldValue.arrayRemove([ds])
+                                          //     }
+                                          //   }
+                                          // }, merge: true);
+                                        })
+                                  ],
+                                )),
+                          );
+                        });
+                  },
                   color: Color.fromRGBO(244, 244, 244, 1),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -74,13 +135,16 @@ class LectureItemUI extends StatelessWidget {
                                   Icons.location_on,
                                   color: Color.fromRGBO(150, 150, 150, 1),
                                 ),
-                                Text(
+                                Container(
+                                  width: 100,
+                                    child: Text(
                                   '${lecture.location}',
                                   overflow: TextOverflow.ellipsis,
-                                )
+                                ))
                               ],
                             ),
-                            Text('${lecture.course.unitLoad} ${(lecture.course.unitLoad > 1) ? 'units' : 'unit'}')
+                            Text(
+                                '${lecture.course.unitLoad} ${(lecture.course.unitLoad > 1) ? 'units' : 'unit'}')
                           ]),
                     ]),
                   ),

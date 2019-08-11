@@ -12,9 +12,9 @@ class Buzz {
   String title;
   String author;
   String postTime;
-  String tag;
   String venue;
   String msg;
+  String date;
 
   String proposedTime;
 
@@ -24,7 +24,7 @@ class Buzz {
       this.postTime,
       this.proposedTime,
       this.msg,
-      this.tag,
       this.title,
-      this.venue});
+      this.venue,
+      this.date});
 }

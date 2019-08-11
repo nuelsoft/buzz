@@ -44,6 +44,8 @@ class Auth implements BaseAuth {
         'bio': 'Hi, I\'m $name',
         'phone': null,
         'location': 'Undetermined',
+        'photoUrl':
+            'https://firebasestorage.googleapis.com/v0/b/buzz-6ab99.appspot.com/o/happy-little-boy.png?alt=media&token=5746a4d3-c853-41df-ae5f-b57254b6fd3a',
         'channels': []
       });
     }
@@ -51,16 +53,11 @@ class Auth implements BaseAuth {
   }
 
   Future<String> getCurrentUser() async {
-    AppManager.dp = File('${tempDir.path}/${AppManager.myUserID}');
-
-    if (AppManager.dp == null) {
-      storage.writeToFile(AppManager.dp);
-    }
-
     FirebaseUser user = await _firebaseAuth.currentUser();
     AppManager.myUserID = user.uid;
     AppManager.myEmail = user.email;
     fstore.collection('userData').document(user.uid).get().then((val) {
+      AppManager.dp = (val['profileUrl'] != null) ? val['profileUrl'] : '';
       AppManager.nick = val['nickname'];
       AppManager.bio = val['bio'];
       AppManager.phone = val['phone'];
@@ -79,23 +76,31 @@ class Auth implements BaseAuth {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    user = await _firebaseAuth
-        .signInWithCredential(credential)
-        .whenComplete(() {});
+    user = await _firebaseAuth.signInWithCredential(credential);
 
-    if (user != null) {
-      // if(await fstore.collection('userData'))
-      await fstore.collection('userData').document(user.uid).setData({
-        'name': user.displayName,
-        // 'nickname': null,
-        // 'bio': 'Hi, I\'m ${user.displayName}',
-        // 'phone': null,
-        // 'location': 'Undetermined',
-        // 'channels': []
-      }, merge: true);
-    }
+    await fstore.collection('userData').document(user.uid).get().then((val) {
+      if (!val.exists) {
+        //     print('value of snapshot'+ val.exists.toString());
+        if (user != null) {
+          fstore.collection('userData').document(user.uid).setData({
+            'name': user.displayName,
+            'nickname': null,
+            'bio': 'Hi, I\'m ${user.displayName}',
+            'phone': null,
+            'profileUrl': (user.photoUrl == null)
+                ? 'https://firebasestorage.googleapis.com/v0/b/buzz-6ab99.appspot.com/o/happy-little-boy.png?alt=media&token=5746a4d3-c853-41df-ae5f-b57254b6fd3a'
+                : user.photoUrl,
+            'location': 'Undetermined',
+            'channels': []
+          });
+        }
+      }
+    });
+
     return 'success';
   }
+
+  // Future<void> gSignIn() {}
 
   Future<String> forgotPassword(String email) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);

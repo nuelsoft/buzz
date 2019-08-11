@@ -6,8 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CourseItem extends StatelessWidget {
   final Course course;
   final bool isLast;
+  final DocumentSnapshot ds;
   final Firestore fstore = Firestore.instance;
-  CourseItem({this.course, this.isLast});
+  CourseItem({this.course, this.isLast, this.ds});
 
   @override
   Widget build(BuildContext context) {
@@ -27,63 +28,35 @@ class CourseItem extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       children: <Widget>[
                         Padding(
-                            padding: EdgeInsets.only(top: 16, left: 16, ),
+                            padding: EdgeInsets.only(
+                              top: 16,
+                              left: 16,
+                            ),
                             child: Text(
                               '${course.courseCode}',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w500),
                             )),
                         ListTile(
-                          leading: Icon(Icons.delete,
-                              color: Color.fromRGBO(
-                                100,
-                                100,
-                                100,
-                                1,
-                              )),
                           title: Text('Remove Course'),
                           onTap: () {
+                            fstore
+                                .collection('channels')
+                                .document(course.channelId)
+                                .setData({
+                              'coursesOrder':
+                                  FieldValue.arrayRemove([course.courseCode])
+                            }, merge: true);
+                            fstore
+                                .collection('channels')
+                                .document(course.channelId)
+                                .setData({
+                              'courses': {'courseCode': null}
+                            }, merge: true);
+
                             Navigator.pop(context);
                           },
                         ),
-                        ListTile(
-                          leading: Icon(Icons.edit_attributes,
-                              color: Color.fromRGBO(
-                                100,
-                                100,
-                                100,
-                                1,
-                              )),
-                          title: Text('Edit Course Details'),
-                          onTap: () {
-                            Navigator.pop(context);
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (_) => Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(15),
-                                              topLeft: Radius.circular(15))),
-                                      height: 170,
-                                      child: ListView(
-                                        physics: BouncingScrollPhysics(),
-                                        children: <Widget>[
-                                          Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 16, left: 16),
-                                              child: Text(
-                                                'Edit ${course.courseCode} Details',
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )),
-                                        ],
-                                      ),
-                                    ));
-                          },
-                        )
                       ],
                     ),
                   ));

@@ -5,6 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'inChannel.dart';
 import 'package:buzz/core/appManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clipboard_manager/clipboard_manager.dart';
+// import 'package:buzz/ui/ads.dart';
+// import 'package:firebase_admob/firebase_admob.dart';
+// import 'package:buzz/ui/errorHandler.dart';
 
 class ChannelList extends StatefulWidget {
   // final List<Channel> channels;
@@ -22,6 +26,9 @@ class ChannelListState extends State<ChannelList> {
 
   @override
   Widget build(BuildContext context) {
+    // ErrorWidget.builder = (FlutterErrorDetails error) {
+    //   ErrorUI().getErrorUI(context, error);
+    // };
     return StreamBuilder(
       stream: fstore
           .collection('userData')
@@ -32,48 +39,78 @@ class ChannelListState extends State<ChannelList> {
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator());
           default:
-            if (snapshot.hasData && snapshot.data['channels'].length != 0) {
-              return ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: snapshot.data['channels'].length,
-                itemBuilder: (context, index) {
-                  return StreamBuilder(
-                    stream: fstore
-                        .collection('channels')
-                        .document(snapshot.data['channels'][index]['channelId'])
-                        .snapshots(),
-                    builder: (cardBuilder, cardSnapshot) {
-                      if (cardSnapshot.hasData && cardSnapshot.data != null) {
-                        return ChannelEntry(
-                            channelTitle: cardSnapshot.data['channelName'],
-                            channelId: cardSnapshot.data['channelId'],
-                            base: cardSnapshot.data['institution'],
-                            members: cardSnapshot.data['channelMembers'],
-                            currentBuzzes: snapshot.data['channels'][index]
-                                ['currentNotification']);
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
+            if (snapshot.hasData && snapshot.data != null) {
+              if (snapshot.data['channels'] != null) {
+                if (snapshot.data['channels'].length != 0) {
+                  return ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: snapshot.data['channels'].length,
+                    itemBuilder: (context, index) {
+                      return StreamBuilder(
+                        stream: fstore
+                            .collection('channels')
+                            .document(snapshot.data['channels'][index])
+                            .snapshots(),
+                        builder: (cardBuilder, cardSnapshot) {
+                          if (cardSnapshot.hasData &&
+                              cardSnapshot.data != null) {
+                            return ChannelEntry(
+                                isAdmin: cardSnapshot.data['users']
+                                    [AppManager.myUserID]['isAdmin'],
+                                channelTitle: cardSnapshot.data['channelName'],
+                                channelId: cardSnapshot.data['channelId'],
+                                base: cardSnapshot.data['institution'],
+                                members: cardSnapshot.data['users'].length,
+                                currentBuzzes: cardSnapshot
+                                        .data['currentNotifications'] -
+                                    snapshot.data['channelLog']
+                                            [snapshot.data['channels'][index]]
+                                        ['currentNotifications']
+                                // cardSnapshot.data['currentNotifications'])
+                                );
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      );
                     },
                   );
-                },
-              );
+                } else {
+                  return Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(
+                        FontAwesomeIcons.chalkboard,
+                        size: 55,
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(top: 5, left: 15),
+                          child: Text('No Channels found'))
+                    ],
+                  ));
+                }
+              } else {
+                return Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      FontAwesomeIcons.chalkboard,
+                      size: 55,
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(top: 5, left: 15),
+                        child: Text('No Channels found'))
+                  ],
+                ));
+              }
             } else {
               return Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.chalkboard,
-                    size: 55,
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(top: 5, left: 15),
-                      child: Text('No Channels found'))
-                ],
-              ));
+                child: Text('Getting things ready'),
+              );
             }
         }
       },
@@ -84,13 +121,15 @@ class ChannelListState extends State<ChannelList> {
 class ChannelEntry extends StatefulWidget {
   final String channelTitle, channelId, base;
   final int members, currentBuzzes;
-  ChannelEntry(
-      {this.channelTitle,
-      this.channelId,
-      this.base,
-      this.members,
-      this.currentBuzzes,
-      });
+  final bool isAdmin;
+  ChannelEntry({
+    this.isAdmin,
+    this.channelTitle,
+    this.channelId,
+    this.base,
+    this.members,
+    this.currentBuzzes,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -107,13 +146,13 @@ class ChannelEntryState extends State<ChannelEntry> {
   String channelTitle, channelId, base;
   int members, currentBuzzes;
 
-  ChannelEntryState(
-      {this.channelTitle,
-      this.channelId,
-      this.base,
-      this.members,
-      this.currentBuzzes,
-      });
+  ChannelEntryState({
+    this.channelTitle,
+    this.channelId,
+    this.base,
+    this.members,
+    this.currentBuzzes,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -130,10 +169,12 @@ class ChannelEntryState extends State<ChannelEntry> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(12))),
             onPressed: () {
+              // Ads.myBanner.dispose();
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => InChannel(
+                            isAdmin: widget.isAdmin,
                             channelID: channelId,
                           )));
             },
@@ -149,44 +190,22 @@ class ChannelEntryState extends State<ChannelEntry> {
                               borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(15),
                                   topLeft: Radius.circular(15))),
-                          height: 210,
+                          height: 170,
                           child: ListView(
                             physics: BouncingScrollPhysics(),
                             children: <Widget>[
                               Padding(
-                                  padding: EdgeInsets.only(top: 16, left: 16),
+                                  padding: EdgeInsets.only(
+                                    top: 16,
+                                    left: 16,
+                                    right: 10,
+                                  ),
                                   child: Text(
                                     '$channelTitle',
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500),
                                   )),
-                              ListTile(
-                                leading: Icon(Icons.delete,
-                                    color: Color.fromRGBO(
-                                      100,
-                                      100,
-                                      100,
-                                      1,
-                                    )),
-                                title: Text('Leave and Delete Channel'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.notifications_off,
-                                    color: Color.fromRGBO(
-                                      100,
-                                      100,
-                                      100,
-                                      1,
-                                    )),
-                                title: Text('Mute Channel'),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
                               ListTile(
                                 leading: Icon(Icons.content_copy,
                                     color: Color.fromRGBO(
@@ -197,6 +216,14 @@ class ChannelEntryState extends State<ChannelEntry> {
                                     )),
                                 title: Text('Copy Channel ID'),
                                 onTap: () {
+                                  ClipboardManager.copyToClipBoard("$channelId")
+                                      .then((result) {
+                                    final snackBar = SnackBar(
+                                      duration: Duration(seconds: 2),
+                                      content: Text('Copied to Clipboard'),
+                                    );
+                                    Scaffold.of(context).showSnackBar(snackBar);
+                                  });
                                   Navigator.pop(context);
                                 },
                               )
@@ -254,10 +281,12 @@ class ChannelEntryState extends State<ChannelEntry> {
                                       color: Colors.grey,
                                       size: 17,
                                     ),
-                                    Text(
-                                      base,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    Container(
+                                        width: 90,
+                                        child: Text(
+                                          base,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
                                   ],
                                 )),
                             Padding(

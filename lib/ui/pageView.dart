@@ -3,12 +3,14 @@ import 'lecturesUI.dart';
 import 'coursesUI.dart';
 import 'buzzesUI.dart';
 import '../core/genFiles.dart';
+import 'package:buzz/ui/notificationMan.dart';
 
 class MainPageView extends StatefulWidget {
   final String channelID;
   final PageController pgc;
+  final BuzzNotification bz;
 
-  MainPageView({this.channelID, this.pgc});
+  MainPageView({this.channelID, this.pgc, this.bz});
 
   @override
   State<StatefulWidget> createState() {
@@ -28,14 +30,13 @@ class MainPageViewState extends State<MainPageView> {
       controller: pgc,
       onPageChanged: (index) {
         setState(() {
-                  GenFiles.selectedIndex = index;
-                  
-                });
+          GenFiles.selectedIndex = index;
+        });
       },
-      physics: BouncingScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       // physics:
       children: <Widget>[
-        Lectures(channelID: channelID),
+        Lectures(channelID: channelID, bz: widget.bz),
         Courses(
           channelID: channelID,
         ),

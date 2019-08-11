@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 // import 'package:buzz/core/SearchDel.dart';
 import 'package:buzz/ui/joinModalBottomSheet.dart';
 import 'package:buzz/ui/makeModalBottomSheet.dart';
+import 'package:buzz/main.dart';
+import 'dart:io';
 
 class MakeNJoin extends StatefulWidget {
   @override
@@ -11,20 +13,35 @@ class MakeNJoin extends StatefulWidget {
 }
 
 class MakeNJoinState extends State<MakeNJoin> {
+  bool hasInternet = false;
+  Future<void> getInternetStatus() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        hasInternet = true;
+        print('has internet');
+      }
+    } on SocketException catch (_) {
+      hasInternet = false;
+      print('no internet');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getInternetStatus();
     return BottomSheet(
         onClosing: () {},
         enableDrag: true,
         builder: (context) => Container(
-            height: 150,
+            height: 200,
             decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(15),
                     topLeft: Radius.circular(15))),
             child: Padding(
-                padding: EdgeInsets.only(top: 35, bottom: 35),
+                padding: EdgeInsets.only(top: 0, bottom: 35),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -44,6 +61,13 @@ class MakeNJoinState extends State<MakeNJoin> {
                       padding: EdgeInsets.all(8),
                       highlightColor: Color.fromRGBO(230, 230, 255, 1),
                       onPressed: () {
+                        getInternetStatus();
+                        if (!hasInternet) {
+                          AppHome().showSnack(
+                              'Connect to the internet to Make channel');
+                          Navigator.pop(context);
+                          return;
+                        }
                         Navigator.pop(context);
                         showModalBottomSheet(
                             context: context,
@@ -66,6 +90,13 @@ class MakeNJoinState extends State<MakeNJoin> {
                       padding: EdgeInsets.all(8),
                       highlightColor: Color.fromRGBO(230, 230, 255, 1),
                       onPressed: () {
+                        getInternetStatus();
+                        if (!hasInternet) {
+                          AppHome().showSnack(
+                              'Connect to the internet to Join channel');
+                          Navigator.pop(context);
+                          return;
+                        }
                         Navigator.pop(context);
                         showModalBottomSheet(
                             context: context,

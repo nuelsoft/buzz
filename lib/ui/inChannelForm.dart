@@ -55,15 +55,21 @@ class _InChannelFormState extends State<InChannelForm> {
 
     var chnl = fstore.collection('channels').document(widget.channelID).get();
     chnl.then((val) {
-      for (var i in val['courses']) {
-        lst.add(DropdownMenuItem(
-          child: Text(i['courseCode']),
-          value: index,
-        ));
-        courseCodes.add(i['courseCode']);
-        index++;
+      for (var i in val['coursesOrder']) {
+        if (index < val['coursesOrder'].length) {
+          lst.add(DropdownMenuItem(
+            child: Text(val['courses'][i]['courseCode']),
+            value: index,
+          ));
+          courseCodes.add(val['courses'][i]['courseCode']);
+          index++;
+
+          setState(() {});
+        } else {
+          break;
+        }
       }
-      setState(() {});
+      lst.removeRange(val['coursesOrder'].length, lst.length);
     });
   }
 
@@ -95,13 +101,18 @@ class _InChannelFormState extends State<InChannelForm> {
   Future<void> addLecture() async {
     var course;
     await fstore.collection('channels').document(channelID).get().then((val) {
-      course = val['courses'][selectedCourse];
+      course = val['courses'][val['coursesOrder'][selectedCourse]];
     });
+    String dselct = daySelected.toString();
+    String time = startTime.toString();
+    String key = '$selectedCourse$dselct$time${locationController.text}'
+        .hashCode
+        .toString();
 
     fstore.collection('channels').document(widget.channelID).setData({
       'lectures': {
-        daySelected.toString(): FieldValue.arrayUnion([
-          {
+        daySelected.toString(): {
+          key: {
             'course': course,
             'startTimeHour': startTime.hour,
             'startTimeMinute': startTime.minute,
@@ -112,9 +123,66 @@ class _InChannelFormState extends State<InChannelForm> {
             'dayOfWeek': daySelected,
             'isFixed': isFixed
           }
+        }
+      }
+    }, merge: true);
+
+    fstore.collection('channels').document(widget.channelID).setData({
+      'lecturesOrder': {
+        daySelected.toString(): FieldValue.arrayUnion([
+          {
+            'key': key,
+            'startTimeHour': startTime.hour,
+            'startTimeMinute': startTime.minute
+          }
         ])
       }
     }, merge: true);
+
+//ReOrdering
+    fstore.collection('channels').document(widget.channelID).get().then((val) {
+      List dummy = [];
+      dummy = val.data['lecturesOrder'][daySelected.toString()];
+      // print(dummy);
+      // print(val.data['lecturesOrder'][daySelected.toString()]);
+      for (int j = 0; j < dummy.length; j++) {
+        for (int i = 0; i < dummy.length - 1; i++) {
+          if (dummy[i]['startTimeHour'] > dummy[i + 1]['startTimeHour']) {
+            // print(
+            //     'i : ${dummy[i]['startTimeHour']}, i+1 : ${dummy[i + 1]['startTimeHour']}');
+
+            // print(
+            //     'i : ${dummy[i].toString()}, i+1 : ${dummy[i + 1].toString()}');
+            // [].sort()
+            var dumb = dummy[i + 1];
+            dummy[i + 1] = dummy[i];
+            dummy[i] = dumb;
+
+            // print(
+            //     'i : ${dummy[i]['startTimeHour']}, i+1 : ${dummy[i + 1]['startTimeHour']}');
+            // print(
+            //     'i : ${dummy[i].toString()}, i+1 : ${dummy[i + 1].toString()}');
+          } else if (dummy[i]['startTimeHour'] ==
+              dummy[i + 1]['startTimeHour']) {
+            if (dummy[i]['startTimeMinute'] > dummy[i + 1]['startTimeMinute']) {
+              var dumb = dummy[i + 1];
+              dummy[i + 1] = dummy[i];
+              dummy[i] = dumb;
+            }
+          }
+        }
+      }
+      fstore.collection('channels').document(widget.channelID).setData({
+        'lecturesOrder': {daySelected.toString(): dummy}
+      }, merge: true);
+
+      // print(dummy);
+      // fstore
+      //     .collection('channels')
+      //     .document(widget.channelID)
+      //     .setData({daySelected.toString(): dummy}, merge: true);
+    });
+
     Navigator.pop(context);
   }
 
@@ -122,183 +190,188 @@ class _InChannelFormState extends State<InChannelForm> {
 
   List<Widget> _getWidgets(BuildContext context) {
     if (widget.whichTab == 0) {
-      return <Widget>[
-        DropdownButtonFormField(
-            // value: courseCode
-            decoration: InputDecoration(
-                labelText: courseCodes[selectedCourse],
-                labelStyle: TextStyle(color: Colors.black),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)))),
-            // hint: Text('Choose Course'),220
-            onChanged: (val) {
-              selectedCourse = val;
-              setState(() {});
-            },
-            items: lst),
-        Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: DropdownButtonFormField(
-              // value: courseCode
-              decoration: InputDecoration(
-                  labelText: daysOfWeek[daySelected],
-                  labelStyle: TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)))),
-              // hint: Text('Choose Course'),
-              onChanged: (val) {
-                daySelected = val;
-                setState(() {});
-              },
-              items: <DropdownMenuItem<int>>[
-                DropdownMenuItem(
-                  child: Text('Monday'),
-                  value: 0,
-                ),
-                DropdownMenuItem(
-                  child: Text('Tuesday'),
-                  value: 1,
-                ),
-                DropdownMenuItem(child: Text('Wednesday'), value: 2),
-                DropdownMenuItem(
-                  child: Text('Thursday'),
-                  value: 3,
-                ),
-                DropdownMenuItem(
-                  child: Text('Friday'),
-                  value: 4,
-                ),
-                DropdownMenuItem(
-                  child: Text('Saturday'),
-                  value: 5,
-                ),
-              ],
-            )),
-        Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: Container(
-                decoration: BoxDecoration(
-                    border: (Border.all(color: Colors.grey[600])),
-                    // color: Theme.of(context).accentColor,
-                    borderRadius: BorderRadius.all(Radius.circular(15))),
-                child: ListTile(
-                    title: Text((startTime == null)
-                        ? 'Start time'
-                        : 'Starts at: ' +
-                            startTime.hour.toString() +
-                            ' : ' +
-                            ((startTime.minute.toString() == '0')
-                                ? '00'
-                                : startTime.minute.toString())),
+      return (lst.length != 0)
+          ? <Widget>[
+              DropdownButtonFormField(
+                  // value: courseCode
+                  decoration: InputDecoration(
+                      labelText: courseCodes[selectedCourse],
+                      labelStyle: TextStyle(color: Colors.black),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  // hint: Text('Choose Course'),220
+                  onChanged: (val) {
+                    selectedCourse = val;
+                    setState(() {});
+                  },
+                  items: lst),
+              Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: DropdownButtonFormField(
+                    // value: courseCode
+                    decoration: InputDecoration(
+                        labelText: daysOfWeek[daySelected],
+                        labelStyle: TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15)))),
+                    // hint: Text('Choose Course'),
+                    onChanged: (val) {
+                      daySelected = val;
+                      setState(() {});
+                    },
+                    items: <DropdownMenuItem<int>>[
+                      DropdownMenuItem(
+                        child: Text('Monday'),
+                        value: 0,
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Tuesday'),
+                        value: 1,
+                      ),
+                      DropdownMenuItem(child: Text('Wednesday'), value: 2),
+                      DropdownMenuItem(
+                        child: Text('Thursday'),
+                        value: 3,
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Friday'),
+                        value: 4,
+                      ),
+                      DropdownMenuItem(
+                        child: Text('Saturday'),
+                        value: 5,
+                      ),
+                    ],
+                  )),
+              Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          border: (Border.all(color: Colors.grey[600])),
+                          // color: Theme.of(context).accentColor,
+                          borderRadius: BorderRadius.all(Radius.circular(15))),
+                      child: ListTile(
+                          title: Text((startTime == null)
+                              ? 'Start time'
+                              : 'Starts at: ' +
+                                  startTime.hour.toString() +
+                                  ' : ' +
+                                  ((startTime.minute.toString() == '0')
+                                      ? '00'
+                                      : startTime.minute.toString())),
+                          onTap: () {
+                            chooseTime(context);
+                          }))),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: (Border.all(color: Colors.grey[600])),
+                      // color: Theme.of(context).accentColor,
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: ListTile(
+                    title: Text('Duration: ' +
+                        (((lectureDuration.inHours > 0)
+                                ? lectureDuration.inHours.toString() +
+                                    ((lectureDuration.inHours == 1)
+                                        ? ' hour'
+                                        : ' hours')
+                                : '') +
+                            ' ' +
+                            ((((lectureDuration.inMinutes -
+                                        (lectureDuration.inHours * 60)) >
+                                    0)
+                                ? (lectureDuration.inMinutes -
+                                            (lectureDuration.inHours * 60))
+                                        .toString() +
+                                    (((lectureDuration.inMinutes -
+                                                (lectureDuration.inHours *
+                                                    60)) ==
+                                            1)
+                                        ? 'minute'
+                                        : 'minutes')
+                                : '')))),
                     onTap: () {
-                      chooseTime(context);
-                    }))),
-        Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Container(
-            decoration: BoxDecoration(
-                border: (Border.all(color: Colors.grey[600])),
-                // color: Theme.of(context).accentColor,
-                borderRadius: BorderRadius.all(Radius.circular(15))),
-            child: ListTile(
-              title: Text('Duration: ' +
-                  (((lectureDuration.inHours > 0)
-                          ? lectureDuration.inHours.toString() +
-                              ((lectureDuration.inHours == 1)
-                                  ? ' hour'
-                                  : ' hours')
-                          : '') +
-                      ' ' +
-                      ((((lectureDuration.inMinutes -
-                                  (lectureDuration.inHours * 60)) >
-                              0)
-                          ? (lectureDuration.inMinutes -
-                                      (lectureDuration.inHours * 60))
-                                  .toString() +
-                              (((lectureDuration.inMinutes -
-                                          (lectureDuration.inHours * 60)) ==
-                                      1)
-                                  ? 'minute'
-                                  : 'minutes')
-                          : '')))),
-              onTap: () {
-                chooseDuration(context);
-              },
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: TextFormField(
-            controller: locationController,
-            // autofocus: true,
-            decoration: InputDecoration(
-                labelText: 'Location',
-                labelStyle: TextStyle(color: Colors.black),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15)))),
-            autocorrect: false,
-            textCapitalization: TextCapitalization.words,
-            // autovalidate: true,
-            validator: (val) {
-              return (val.length == 0) ? 'Fill this out please.' : null;
-            },
-            keyboardType: TextInputType.text,
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: Container(
-            decoration: BoxDecoration(
-                border: (Border.all(color: Colors.grey[600])),
-                // color: Theme.of(context).accentColor,
-                borderRadius: BorderRadius.all(Radius.circular(15))),
-            child: ListTile(
-              title: Text('Fixed'),
-              trailing: Switch(
-                onChanged: (val) {
-                  isFixed = val;
-                  setState(() {});
-                },
-                value: isFixed,
-              ),
-              onTap: () {
-                isFixed = !isFixed;
-                setState(() {});
-              },
-            ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Padding(
-              padding: EdgeInsets.only(top: 0),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                        color: Theme.of(context).accentColor,
-                        style: BorderStyle.solid),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                color: Theme.of(context).accentColor,
-                onPressed: () {
-                  if (InChannelForm._inchannelFormKey.currentState.validate()) {
-                    addLecture();
-                  }
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    'Add Lecture',
-                    style: TextStyle(color: Colors.white),
+                      chooseDuration(context);
+                    },
                   ),
                 ),
               ),
-            ),
-          ),
-        )
-      ];
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: TextFormField(
+                  controller: locationController,
+                  // autofocus: true,
+                  decoration: InputDecoration(
+                      labelText: 'Location',
+                      labelStyle: TextStyle(color: Colors.black),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.words,
+                  // autovalidate: true,
+                  validator: (val) {
+                    return (val.length == 0) ? 'Fill this out please.' : null;
+                  },
+                  keyboardType: TextInputType.text,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: (Border.all(color: Colors.grey[600])),
+                      // color: Theme.of(context).accentColor,
+                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                  child: ListTile(
+                    title: Text('Fixed'),
+                    trailing: Switch(
+                      onChanged: (val) {
+                        isFixed = val;
+                        setState(() {});
+                      },
+                      value: isFixed,
+                    ),
+                    onTap: () {
+                      isFixed = !isFixed;
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 0),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Theme.of(context).accentColor,
+                              style: BorderStyle.solid),
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      color: Theme.of(context).accentColor,
+                      onPressed: () {
+                        if (InChannelForm._inchannelFormKey.currentState
+                            .validate()) {
+                          addLecture();
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(15),
+                        child: Text(
+                          'Add Lecture',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ]
+          : [Text('Please add a Course to continue!')];
     } else if (widget.whichTab == 1) {
       return <Widget>[
         TextFormField(
@@ -420,6 +493,12 @@ class _InChannelFormState extends State<InChannelForm> {
           ),
         ),
         Padding(
+            padding: EdgeInsets.all(4),
+            child: Center(
+              child: Text(
+                  'Note: if Course already exists, it is automatically updated!'),
+            )),
+        Padding(
           padding: EdgeInsets.all(20),
           child: FittedBox(
             fit: BoxFit.scaleDown,
@@ -438,8 +517,8 @@ class _InChannelFormState extends State<InChannelForm> {
                         .collection('channels')
                         .document(widget.channelID)
                         .setData({
-                      'courses': FieldValue.arrayUnion([
-                        {
+                      'courses': {
+                        InChannelForm.courseCodeController.text: {
                           'courseTitle':
                               InChannelForm.courseTitleController.text,
                           'courseCode': InChannelForm.courseCodeController.text,
@@ -451,7 +530,11 @@ class _InChannelFormState extends State<InChannelForm> {
                           'recommendText':
                               InChannelForm.courseRecommendedTextController.text
                         }
-                      ])
+                      }
+                    }, merge: true);
+                    fstore.collection('channels').document(channelID).setData({
+                      'coursesOrder': FieldValue.arrayUnion(
+                          [InChannelForm.courseCodeController.text])
                     }, merge: true);
 
                     Navigator.pop(context);
@@ -476,7 +559,9 @@ class _InChannelFormState extends State<InChannelForm> {
         )
       ];
     } else {
-      return [BuzzForm()];
+      return [
+        BuzzForm(channelID: channelID),
+      ];
     }
   }
 
@@ -500,6 +585,7 @@ class _InChannelFormState extends State<InChannelForm> {
                     topLeft: Radius.circular(18),
                   )),
               child: ListView(
+                padding: EdgeInsets.only(bottom: 50),
                 physics: BouncingScrollPhysics(),
                 children: [
                   Padding(

@@ -3,10 +3,12 @@ import '../core/constants.dart' show Days;
 import 'tickerProv.dart' show VState;
 import 'package:buzz/ui/lectureListUI/lectureList.dart';
 import 'package:buzz/core/genFiles.dart';
+import 'package:buzz/ui/notificationMan.dart';
 
 class Lectures extends StatefulWidget {
   final String channelID;
-  Lectures({this.channelID});
+  final BuzzNotification bz;
+  Lectures({this.channelID, this.bz});
 
   @override
   State<StatefulWidget> createState() {
@@ -30,9 +32,9 @@ class LecturesState extends State<Lectures> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  PageController pgControl = PageController(initialPage: 0, keepPage: true);
+  PageController pgControl = PageController(initialPage: GenFiles.innerSelectedIndex, keepPage: true);
   TabController tbControl =
-      TabController(length: tabs.length, vsync: VState(), initialIndex: 0);
+      TabController(length: tabs.length, vsync: VState(), initialIndex: GenFiles.innerSelectedIndex);
   _pageChanged(index) {
     setState(() {
       GenFiles.innerSelectedIndex = index;
@@ -74,26 +76,26 @@ class LecturesState extends State<Lectures> with AutomaticKeepAliveClientMixin {
               onPageChanged: _pageChanged,
               physics: BouncingScrollPhysics(),
               children: <Widget>[
-                LectureList(dayOfWeek: Days.monday, channelID: channelID),
+                LectureList(dayOfWeek: Days.monday, channelID: channelID, bz: widget.bz),
                 LectureList(
                   dayOfWeek: Days.tuesday,
-                  channelID: channelID,
+                  channelID: channelID, bz: widget.bz
                 ),
                 LectureList(
                   dayOfWeek: Days.wednesday,
-                  channelID: channelID,
+                  channelID: channelID, bz: widget.bz
                 ),
                 LectureList(
                   dayOfWeek: Days.thursday,
-                  channelID: channelID,
+                  channelID: channelID, bz: widget.bz
                 ),
                 LectureList(
                   dayOfWeek: Days.friday,
-                  channelID: channelID,
+                  channelID: channelID, bz: widget.bz
                 ),
                 LectureList(
                   dayOfWeek: Days.saturday,
-                  channelID: channelID,
+                  channelID: channelID, bz: widget.bz
                 ),
               ],
             ))

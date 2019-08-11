@@ -14,38 +14,36 @@ class About extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(
-                    Icons.toll,
-                    size: 60,
-                  ),
+                  Image.asset('assets/img/login_logo.png', height: 70,),
+                  
                   Padding(
                     padding: EdgeInsets.only(left: 16),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Buzz Inc.',
+                            'Buzz',
                             style: TextStyle(fontSize: 25),
                           ),
                           Align(
                               alignment: Alignment.topRight,
                               child: Text(
-                                '1.0.0',
+                                'Beta Version',
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 15,
                                 ),
                               )),
-                          Padding(
-                            padding: EdgeInsets.only(top: 16),
-                            child: Align(
-                                alignment: Alignment.topRight,
-                                child: Text(
-                                  'University of Nigeria, Nsukka',
-                                  style: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      fontWeight: FontWeight.w300),
-                                )),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.only(top: 16),
+                          //   child: Align(
+                          //       alignment: Alignment.topRight,
+                          //       child: Text(
+                          //         'University of Nigeria, Nsukka',
+                          //         style: TextStyle(
+                          //             fontStyle: FontStyle.italic,
+                          //             fontWeight: FontWeight.w300),
+                          //       )),
+                          // ),
 
                           // Align(
                           //   alignment: Alignment.topRight,

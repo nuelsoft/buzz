@@ -9,11 +9,15 @@ class BuzzUser {
   String channelId;
   String profileUrl;
   String bio;
+  String userID;
+  String dateJoined;
 
   List<MyChannel> myChannels;
 
   BuzzUser(
-      {this.displayName,
+      {this.dateJoined,
+      this.userID,
+      this.displayName,
       this.nickname,
       this.dateOfBirth,
       this.gender,

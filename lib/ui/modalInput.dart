@@ -7,7 +7,7 @@ class TakeInput extends StatelessWidget {
   TakeInput({this.whichInput});
   static final _profileFormKey = GlobalKey<FormState>();
 
-   static final textFieldController = TextEditingController();
+  static final textFieldController = TextEditingController();
   final Firestore fstore = Firestore.instance;
 
   void update(String value, BuildContext context) {
@@ -30,7 +30,7 @@ class TakeInput extends StatelessWidget {
               padding: MediaQuery.of(context).viewInsets,
               duration: Duration(milliseconds: 500),
               child: Container(
-                height: 220,
+                height: 270,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -38,6 +38,7 @@ class TakeInput extends StatelessWidget {
                       topLeft: Radius.circular(18),
                     )),
                 child: ListView(
+                  padding: EdgeInsets.only(bottom: 50),
                   physics: BouncingScrollPhysics(),
                   children: [
                     Padding(
@@ -72,6 +73,10 @@ class TakeInput extends StatelessWidget {
                               ? TextCapitalization.sentences
                               : TextCapitalization.none,
                           // autovalidate: true,
+                          maxLines: (whichInput == 'bio') ? 2 : 1,
+                          textInputAction: (whichInput == 'bio')
+                              ? TextInputAction.newline
+                              : TextInputAction.done,
                           validator: (val) {
                             if (val.isEmpty) {
                               return 'Fill out this field';
